@@ -21,6 +21,7 @@ steps:
   inputs:
     verbose: false
     command: 'custom'
+    workingDir: $(Build.SourcesDirectory)
     customCommand: 'install azurite'
 
 - task: ShellScript@2
