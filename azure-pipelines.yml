@@ -41,7 +41,22 @@ steps:
     command: 'build'
     arguments: '--no-restore --configuration $(buildConfiguration)'
     projects: '**/*.csproj'
+- task: VSTest@2
+  inputs:
+    testSelector: 'testAssemblies'
+    testAssemblyVer2: |
+      **\UnitTests.dll
+      !**\*TestAdapter.dll
+      !**\obj\**
+    searchFolder: '$(System.DefaultWorkingDirectory)'
+    testRunTitle: 'Unit Tests'
 
 - task: VSTest@2
   inputs:
-   searchFolder: '$(System.DefaultWorkingDirectory)'    
+    testSelector: 'testAssemblies'
+    testAssemblyVer2: |
+      **\IntegrationTests.dll
+      !**\*TestAdapter.dll
+      !**\obj\**
+    searchFolder: '$(System.DefaultWorkingDirectory)'
+    testRunTitle: 'Integration Tests'    
