@@ -17,16 +17,11 @@ steps:
     version: '$(dotnetSdkVersion)'
 
 - task: Npm@1
-  displayName: 'Run npm -g azurite'
-  inputs:
-    verbose: false
-
-- task: Npm@1
   displayName: 'Install Azurite'
   inputs:
     verbose: false
     command: 'custom'
-    customCommand: 'install -g azuriet & azurite-blob &'
+    customCommand: 'install -g azuriet'
 
 - task: DotNetCoreCLI@2
   displayName: 'Restore project dependencies'
