@@ -23,9 +23,10 @@ steps:
 
 - task: Npm@1
   displayName: 'Install Azurite'
-  command: 'install -g azurite'
   inputs:
-    verbose: false    
+    verbose: false
+    command: 'custom'
+    customCommand: 'install -g azuriet & azurite-blob &'
 
 - task: DotNetCoreCLI@2
   displayName: 'Restore project dependencies'
