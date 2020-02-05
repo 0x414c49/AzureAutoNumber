@@ -21,7 +21,12 @@ steps:
   inputs:
     verbose: false
     command: 'custom'
-    customCommand: 'install -g azurite'
+    customCommand: 'install azurite'
+
+- task: ShellScript@2
+  displayName: 'Running Azurite'
+  inputs:
+    scriptPath: './node_modules/.bin/azurite &'  
 
 - task: DotNetCoreCLI@2
   displayName: 'Restore project dependencies'
