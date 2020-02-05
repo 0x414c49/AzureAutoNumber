@@ -21,7 +21,7 @@ steps:
   inputs:
     verbose: false
     command: 'custom'
-    customCommand: 'install -g azuriet'
+    customCommand: 'install -g azurite'
 
 - task: DotNetCoreCLI@2
   displayName: 'Restore project dependencies'
