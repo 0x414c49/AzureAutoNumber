@@ -17,7 +17,7 @@ namespace SnowMaker
         readonly object blobReferencesLock = new object();
 
         public BlobOptimisticDataStore(CloudStorageAccount account, string containerName)
-        {
+        {            
             var blobClient = account.CreateCloudBlobClient();
             blobContainer = blobClient.GetContainerReference(containerName.ToLower());
             blobContainer.CreateIfNotExists();
