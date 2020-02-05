@@ -19,7 +19,7 @@ steps:
 - task: Npm@1
   displayName: 'Install Azurite'
   inputs:
-    verbose: false
+    verbose: true
     command: 'custom'
     customCommand: 'install azurite'
 
