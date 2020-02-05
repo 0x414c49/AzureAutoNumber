@@ -20,11 +20,13 @@ steps:
 - task: Bash@3
   displayName: 'Install Azurite'
   inputs:      
+    targetType: 'inline'
     script: 'sudo npm install -g azurite'  
 
 - task: Bash@3
   displayName: 'Running Azurite'
   inputs:
+   targetType: 'inline'
    script: 'azurite --silent --location /tmp --debug /tmp/debug.log &'
 
 
