@@ -16,17 +16,17 @@ steps:
   inputs:
     version: '$(dotnetSdkVersion)'
 
-- task: Npm@1
-  displayName: 'Install Azurite'
-  inputs:
-    verbose: true
-    command: 'custom'
-    customCommand: 'install azurite'
 
-- task: ShellScript@2
+- task: Bash@3
+  displayName: 'Install Azurite'
+  inputs:      
+    script: 'sudo npm install -g azurite'  
+
+- task: Bash@3
   displayName: 'Running Azurite'
   inputs:
-    scriptPath: '/home/vsts/work/node_modules/.bin/azurite-blob'  
+   script: 'sudo azurite --silent --location /tmp --debug /tmp/debug.log &'
+
 
 - task: DotNetCoreCLI@2
   displayName: 'Restore project dependencies'
