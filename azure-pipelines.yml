@@ -26,7 +26,7 @@ steps:
 - task: ShellScript@2
   displayName: 'Running Azurite'
   inputs:
-    scriptPath: './node_modules/.bin/azurite &'  
+    scriptPath: '$(Build.SourcesDirectory)/node_modules/.bin/azurite &'  
 
 - task: DotNetCoreCLI@2
   displayName: 'Restore project dependencies'
