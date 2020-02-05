@@ -25,7 +25,7 @@ steps:
 - task: Bash@3
   displayName: 'Running Azurite'
   inputs:
-   script: 'sudo azurite --silent --location /tmp --debug /tmp/debug.log &'
+   script: 'azurite --silent --location /tmp --debug /tmp/debug.log &'
 
 
 - task: DotNetCoreCLI@2
