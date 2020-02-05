@@ -29,7 +29,6 @@ steps:
    targetType: 'inline'
    script: 'azurite --silent --location /tmp --debug /tmp/debug.log &'
 
-
 - task: DotNetCoreCLI@2
   displayName: 'Restore project dependencies'
   inputs:
@@ -42,3 +41,7 @@ steps:
     command: 'build'
     arguments: '--no-restore --configuration $(buildConfiguration)'
     projects: '**/*.csproj'
+
+- task: VSTest@2
+  inputs:
+   searchFolder: '$(System.DefaultWorkingDirectory)'    
