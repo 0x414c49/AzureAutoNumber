@@ -17,51 +17,58 @@ namespace SnowMaker.UnitTests
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void MaxWriteAttemptsShouldThrowArgumentOutOfRangeExceptionWhenValueIsZero()
         {
             var store = Substitute.For<IOptimisticDataStore>();
-            // ReSharper disable once ObjectCreationAsStatement
-            new UniqueIdGenerator(store)
-            {
-                MaxWriteAttempts = 0
-            };
+            Assert.That(() =>
+               // ReSharper disable once ObjectCreationAsStatement
+               new UniqueIdGenerator(store)
+               {
+                   MaxWriteAttempts = 0
+               }
+            , Throws.TypeOf<ArgumentOutOfRangeException>());
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void MaxWriteAttemptsShouldThrowArgumentOutOfRangeExceptionWhenValueIsNegative()
         {
             var store = Substitute.For<IOptimisticDataStore>();
-            // ReSharper disable once ObjectCreationAsStatement
-            new UniqueIdGenerator(store)
-            {
-                MaxWriteAttempts = -1
-            };
+            Assert.That(() =>
+               // ReSharper disable once ObjectCreationAsStatement
+               new UniqueIdGenerator(store)
+               {
+                   MaxWriteAttempts = -1
+               }
+            , Throws.TypeOf<ArgumentOutOfRangeException>());
         }
 
         [Test]
-        [ExpectedException(typeof(UniqueIdGenerationException))]
         public void NextIdShouldThrowExceptionOnCorruptData()
         {
             var store = Substitute.For<IOptimisticDataStore>();
             store.GetData("test").Returns("abc");
 
-            var generator = new UniqueIdGenerator(store);
+            Assert.That(() =>
+            {
+                var generator = new UniqueIdGenerator(store);
+                generator.NextId("test");
+            }
+            , Throws.TypeOf<UniqueIdGenerationException>());
 
-            generator.NextId("test");
         }
 
         [Test]
-        [ExpectedException(typeof(UniqueIdGenerationException))]
         public void NextIdShouldThrowExceptionOnNullData()
         {
             var store = Substitute.For<IOptimisticDataStore>();
             store.GetData("test").Returns((string)null);
 
-            var generator = new UniqueIdGenerator(store);
-
-            generator.NextId("test");
+            Assert.That(() =>
+            {
+                var generator = new UniqueIdGenerator(store);
+                generator.NextId("test");
+            }
+            , Throws.TypeOf<UniqueIdGenerationException>());
         }
 
         [Test]
