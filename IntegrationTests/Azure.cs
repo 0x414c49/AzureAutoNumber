@@ -20,7 +20,9 @@ namespace IntegrationTests.cs
 
         protected override IOptimisticDataStore BuildStore(TestScope scope)
         {
-            return new BlobOptimisticDataStore(storageAccount, scope.ContainerName);
+            var blobOptimisticDataStore = new BlobOptimisticDataStore(storageAccount, scope.ContainerName);
+            blobOptimisticDataStore.Init().GetAwaiter().GetResult();
+            return blobOptimisticDataStore;
         }
 
         public class TestScope : ITestScope
@@ -45,7 +47,7 @@ namespace IntegrationTests.cs
                 var blob = blobContainer.GetBlockBlobReference(IdScopeName);
                 using (var stream = new MemoryStream())
                 {
-                    blob.DownloadToStream(stream);
+                    blob.DownloadToStreamAsync(stream).GetAwaiter().GetResult();
                     return Encoding.UTF8.GetString(stream.ToArray());
                 }
             }
@@ -53,7 +55,7 @@ namespace IntegrationTests.cs
             public void Dispose()
             {
                 var blobContainer = blobClient.GetContainerReference(ContainerName);
-                blobContainer.Delete();
+                blobContainer.DeleteAsync().GetAwaiter().GetResult();
             }
         }
     }

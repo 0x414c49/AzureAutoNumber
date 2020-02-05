@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Threading.Tasks;
 
 namespace SnowMaker
 {
@@ -31,11 +32,26 @@ namespace SnowMaker
             }
         }
 
+        public Task<string> GetDataAsync(string blockName)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task<bool> Init()
+        {
+            throw new System.NotImplementedException();
+        }
+
         public bool TryOptimisticWrite(string blockName, string data)
         {
             var blockPath = Path.Combine(directoryPath, string.Format("{0}.txt", blockName));
             File.WriteAllText(blockPath, data);
             return true;
+        }
+
+        public Task<bool> TryOptimisticWriteAsync(string blockName, string data)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }
