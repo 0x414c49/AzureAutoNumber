@@ -21,13 +21,12 @@ steps:
   inputs:
     verbose: false
     command: 'custom'
-    workingDir: $(Build.SourcesDirectory)
     customCommand: 'install azurite'
 
 - task: ShellScript@2
   displayName: 'Running Azurite'
   inputs:
-    scriptPath: '$(Build.SourcesDirectory)/node_modules/.bin/azurite &'  
+    scriptPath: '/home/vsts/work/node_modules/.bin/azurite &'  
 
 - task: DotNetCoreCLI@2
   displayName: 'Restore project dependencies'
