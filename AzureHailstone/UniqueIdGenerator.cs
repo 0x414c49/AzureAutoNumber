@@ -7,24 +7,18 @@ namespace AzureHailstone
 {
     public class UniqueIdGenerator : IUniqueIdGenerator
     {
-        readonly IOptimisticDataStore optimisticDataStore;
+        private readonly IOptimisticDataStore optimisticDataStore;
 
-        readonly IDictionary<string, ScopeState> states = new Dictionary<string, ScopeState>();
-        readonly object statesLock = new object();
-
-        int batchSize = 100;
-        int maxWriteAttempts = 25;
+        private readonly IDictionary<string, ScopeState> states = new Dictionary<string, ScopeState>();
+        private readonly object statesLock = new object();
+        private int maxWriteAttempts = 25;
 
         public UniqueIdGenerator(IOptimisticDataStore optimisticDataStore)
         {
             this.optimisticDataStore = optimisticDataStore;
         }
 
-        public int BatchSize
-        {
-            get { return batchSize; }
-            set { batchSize = value; }
-        }
+        public int BatchSize { get; set; } = 100;
 
         public int MaxWriteAttempts
         {
@@ -32,7 +26,7 @@ namespace AzureHailstone
             set
             {
                 if (value < 1)
-                    throw new ArgumentOutOfRangeException("value", maxWriteAttempts, "MaxWriteAttempts must be a positive number.");
+                    throw new ArgumentOutOfRangeException(nameof(value), maxWriteAttempts, "MaxWriteAttempts must be a positive number.");
 
                 maxWriteAttempts = value;
             }
@@ -75,7 +69,7 @@ namespace AzureHailstone
                        data));
 
                 state.LastId = nextId - 1;
-                state.HighestIdAvailableInBatch = nextId - 1 + batchSize;
+                state.HighestIdAvailableInBatch = nextId - 1 + BatchSize;
                 var firstIdInNextBatch = state.HighestIdAvailableInBatch + 1;
 
                 if (optimisticDataStore.TryOptimisticWrite(scopeName, firstIdInNextBatch.ToString(CultureInfo.InvariantCulture)))

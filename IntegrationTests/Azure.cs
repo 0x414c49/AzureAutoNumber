@@ -32,8 +32,8 @@ namespace IntegrationTests.cs
             public TestScope(CloudStorageAccount account)
             {
                 var ticks = DateTime.UtcNow.Ticks;
-                IdScopeName = string.Format("AzureHailstonetest{0}", ticks);
-                ContainerName = string.Format("AzureHailstonetest{0}", ticks);
+                IdScopeName = string.Format("azurehailstonetest{0}", ticks);
+                ContainerName = string.Format("azurehailstonetest{0}", ticks);
 
                 blobClient = account.CreateCloudBlobClient();
             }
