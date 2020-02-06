@@ -94,7 +94,7 @@ namespace SnowMaker
 
         private async Task UploadTextAsync(ICloudBlob blob, string text, AccessCondition accessCondition)
         {
-            blob.Properties.ContentEncoding = "UTF-8";
+            blob.Properties.ContentType = "utf-8";
             blob.Properties.ContentType = "text/plain";
             using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(text)))
             {

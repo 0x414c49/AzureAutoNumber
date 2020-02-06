@@ -25,7 +25,7 @@ namespace IntegrationTests.cs
             return blobOptimisticDataStore;
         }
 
-        public class TestScope : ITestScope
+        public sealed class TestScope : ITestScope
         {
             readonly CloudBlobClient blobClient;
 
