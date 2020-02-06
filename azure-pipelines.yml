@@ -3,10 +3,11 @@ trigger:
 
 pool:
   vmImage: 'ubuntu-16.04'
+  demands:
+    - npm  
 
 variables:
   buildConfiguration: 'Release'
-  wwwrootDir: 'Tailspin.SpaceGame.Web/wwwroot'
   dotnetSdkVersion: '3.1.100'
 
 steps:
@@ -14,6 +15,19 @@ steps:
   displayName: 'Use .NET Core SDK $(dotnetSdkVersion)'
   inputs:
     version: '$(dotnetSdkVersion)'
+
+
+- task: Bash@3
+  displayName: 'Install Azurite'
+  inputs:      
+    targetType: 'inline'
+    script: 'sudo npm install -g azurite'  
+
+- task: Bash@3
+  displayName: 'Running Azurite'
+  inputs:
+   targetType: 'inline'
+   script: 'azurite --silent --location /tmp --debug /tmp/debug.log &'
 
 - task: DotNetCoreCLI@2
   displayName: 'Restore project dependencies'
@@ -27,3 +41,11 @@ steps:
     command: 'build'
     arguments: '--no-restore --configuration $(buildConfiguration)'
     projects: '**/*.csproj'
+
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'test'
+    projects: |
+      **\*test*.dll
+      !**\*TestAdapter.dll
+      !**\obj\**
