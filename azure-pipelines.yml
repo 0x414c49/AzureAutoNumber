@@ -43,9 +43,8 @@ steps:
     projects: '**/*.csproj'
 
 - task: DotNetCoreCLI@2
+  displayName: 'Unit test'
   inputs:
     command: 'test'
-    projects: |
-      **\*test*.dll
-      !**\*TestAdapter.dll
-      !**\obj\**
+    arguments: '--configuration $(buildConfigruation) /p:CollectCoverage=true --collect "Code coverage"'
+    projects: '**/*Test*.csproj'
