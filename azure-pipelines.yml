@@ -48,4 +48,4 @@ steps:
     command: 'test'
     arguments: '--configuration $(buildConfiguration) --no-build'
     publishTestResults: true
-    projects: '**/*.Tests.csproj'
+    projects: '**/*Tests.csproj'
