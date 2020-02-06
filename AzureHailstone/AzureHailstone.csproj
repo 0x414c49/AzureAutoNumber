@@ -4,19 +4,20 @@
     <ProductVersion>8.0.30703</ProductVersion>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <AssemblyTitle>SnowMaker</AssemblyTitle>
-    <Company>Tatham Oddie and Jamal Abreu</Company>
-    <Product>SnowMaker</Product>
+    <Company></Company>
+    <Product>AzureHailstone</Product>
     <Description>High performance, distributed unique id generator for Azure environments.</Description>
-    <Version>0.0.1.1</Version>
-    <AssemblyVersion>0.0.1.1</AssemblyVersion>
-    <FileVersion>0.0.1.1</FileVersion>
+    <Version>1.0.0</Version>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>0.0.0.0</FileVersion>
     <OutputPath>bin\$(Configuration)\</OutputPath>
-    <Authors>Tatham Oddie and Jamal Abreu</Authors>
+    <Authors>Ali Bahraminezhad</Authors>
     <PackageLicenseUrl>http://www.opensource.org/licenses/MS-PL</PackageLicenseUrl>
-    <PackageProjectUrl>http://l.tath.am/snowmaker</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/0x414c49/AzureHailstone</PackageProjectUrl>
     <PackageTags>Azure</PackageTags>
     <AssemblyName>AzureHailstone</AssemblyName>
     <RootNamespace>AzureHailstone</RootNamespace>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>full</DebugType>
