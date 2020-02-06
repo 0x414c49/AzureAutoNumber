@@ -72,7 +72,7 @@ steps:
   displayName: 'Pack Nuget'
   inputs:
     command: 'pack'
-    packagesToPack: '**/AzureHailstone.csproj'
+    packagesToPack: 'AzureHailstone/AzureHailstone.csproj'    
     versioningScheme: 'off'
     
 - task: PublishBuildArtifacts@1
