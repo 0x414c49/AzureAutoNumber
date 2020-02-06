@@ -46,6 +46,6 @@ steps:
   displayName: 'Testing'
   inputs:
     command: 'test'
-    arguments: '--configuration Release --no-build'
+    arguments: '--configuration $(buildConfiguration) --no-build'
     publishTestResults: true
     projects: '**/*.Tests.csproj'
