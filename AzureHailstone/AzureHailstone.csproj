@@ -15,6 +15,8 @@
     <PackageLicenseUrl>http://www.opensource.org/licenses/MS-PL</PackageLicenseUrl>
     <PackageProjectUrl>http://l.tath.am/snowmaker</PackageProjectUrl>
     <PackageTags>Azure</PackageTags>
+    <AssemblyName>AzureHailstone</AssemblyName>
+    <RootNamespace>AzureHailstone</RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>full</DebugType>

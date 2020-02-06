@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace SnowMaker
+namespace AzureHailstone
 {
     public interface IOptimisticDataStore
     {

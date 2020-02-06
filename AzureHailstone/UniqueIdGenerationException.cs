@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SnowMaker
+namespace AzureHailstone
 {
     public class UniqueIdGenerationException : Exception
     {

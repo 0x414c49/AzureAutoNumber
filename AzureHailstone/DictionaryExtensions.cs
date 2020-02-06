@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
-namespace SnowMaker
+namespace AzureHailstone
 {
     internal static class DictionaryExtensions
     {

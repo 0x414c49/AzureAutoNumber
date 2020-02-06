@@ -2,7 +2,7 @@
 using System.Threading;
 using NUnit.Framework;
 
-namespace SnowMaker.UnitTests
+namespace AzureHailstone.UnitTests
 {
     [TestFixture]
     public class DictionaryExtentionsTests

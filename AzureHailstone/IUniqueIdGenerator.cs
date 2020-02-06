@@ -1,4 +1,4 @@
-namespace SnowMaker
+namespace AzureHailstone
 {
     public interface IUniqueIdGenerator
     {

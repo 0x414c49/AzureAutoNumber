@@ -2,7 +2,7 @@
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using NUnit.Framework;
-using SnowMaker;
+using AzureHailstone;
 using System.Text;
 using System.IO;
 
@@ -32,8 +32,8 @@ namespace IntegrationTests.cs
             public TestScope(CloudStorageAccount account)
             {
                 var ticks = DateTime.UtcNow.Ticks;
-                IdScopeName = string.Format("snowmakertest{0}", ticks);
-                ContainerName = string.Format("snowmakertest{0}", ticks);
+                IdScopeName = string.Format("AzureHailstonetest{0}", ticks);
+                ContainerName = string.Format("AzureHailstonetest{0}", ticks);
 
                 blobClient = account.CreateCloudBlobClient();
             }

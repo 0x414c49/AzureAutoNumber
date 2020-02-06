@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <ProductVersion>8.0.30703</ProductVersion>
-    <RootNamespace>SnowMaker.UnitTests</RootNamespace>
-    <AssemblyName>SnowMaker.UnitTests</AssemblyName>
+    <RootNamespace>AzureHailstone.UnitTests</RootNamespace>
+    <AssemblyName>AzureHailstone.UnitTests</AssemblyName>
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <AssemblyTitle>UnitTests</AssemblyTitle>
@@ -18,7 +18,7 @@
     <DebugType>pdbonly</DebugType>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SnowMaker\SnowMaker.csproj" />
+    <ProjectReference Include="..\AzureHailstone\AzureHailstone.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Castle.Core" Version="4.4.0" />

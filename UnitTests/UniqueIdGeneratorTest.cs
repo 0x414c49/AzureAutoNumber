@@ -2,7 +2,7 @@
 using NSubstitute;
 using NUnit.Framework;
 
-namespace SnowMaker.UnitTests
+namespace AzureHailstone.UnitTests
 {
     [TestFixture]
     public class UniqueIdGeneratorTest

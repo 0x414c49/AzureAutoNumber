@@ -1,4 +1,4 @@
-namespace SnowMaker
+namespace AzureHailstone
 {
     class ScopeState
     {

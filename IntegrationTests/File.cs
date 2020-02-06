@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using NUnit.Framework;
-using SnowMaker;
+using AzureHailstone;
 
 namespace IntegrationTests.cs
 {
@@ -23,7 +23,7 @@ namespace IntegrationTests.cs
             public TestScope()
             {
                 var ticks = DateTime.UtcNow.Ticks;
-                IdScopeName = string.Format("snowmakertest{0}", ticks);
+                IdScopeName = string.Format("AzureHailstonetest{0}", ticks);
 
                 DirectoryPath = Path.Combine(Path.GetTempPath(), IdScopeName);
                 Directory.CreateDirectory(DirectoryPath);
