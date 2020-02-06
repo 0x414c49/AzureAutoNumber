@@ -46,5 +46,5 @@ steps:
   displayName: 'Unit test'
   inputs:
     command: 'test'
-    arguments: '--configuration $(buildConfigruation) /p:CollectCoverage=true --collect "Code coverage"'
+    arguments: '/p:CollectCoverage=true --collect "Code coverage"'
     projects: '**/*Test*.csproj'
