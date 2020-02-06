@@ -27,7 +27,7 @@ steps:
   displayName: 'Running Azurite'
   inputs:
    targetType: 'inline'
-   script: 'azurite --silent --location /tmp --debug /tmp/debug.log &'
+   script: 'azurite --loose --silent --location /tmp --debug /tmp/debug.log &'
 
 - task: DotNetCoreCLI@2
   displayName: 'Restore project dependencies'
