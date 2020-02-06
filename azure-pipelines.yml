@@ -43,8 +43,9 @@ steps:
     projects: '**/*.csproj'
 
 - task: DotNetCoreCLI@2
-  displayName: 'Unit test'
+  displayName: 'Testing'
   inputs:
     command: 'test'
-    arguments: '/p:CollectCoverage=true --collect "Code coverage"'
-    projects: '**/*Test*.csproj'
+    arguments: '--configuration Release --no-build'
+    publishTestResults: true
+    projects: '**/*.Tests.csproj'
