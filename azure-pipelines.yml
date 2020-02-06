@@ -66,13 +66,11 @@ steps:
   inputs:
     codeCoverageTool: 'cobertura'
     summaryFileLocation: '$(Build.SourcesDirectory)/**/coverage.cobertura.xml'
-
-
+  
 - task: NuGetCommand@2
-  displayName: 'Pack Nuget'
   inputs:
     command: 'pack'
-    packagesToPack: 'AzureHailstone/AzureHailstone.csproj'    
+    packagesToPack: '**/*.csproj'
     versioningScheme: 'off'
     
 - task: PublishBuildArtifacts@1
