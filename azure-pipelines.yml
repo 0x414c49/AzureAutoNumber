@@ -78,6 +78,6 @@ steps:
   inputs:
     command: 'push'
     packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
-    nuGetFeedType: 'external'
+    nuGetFeedType: 'internal'
     publishVstsFeed: '17421ad7-5ef1-491d-9a6e-0a7be1295829'
-    
+
