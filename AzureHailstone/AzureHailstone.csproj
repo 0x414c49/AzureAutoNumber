@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <ProductVersion>8.0.30703</ProductVersion>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <AssemblyTitle>SnowMaker</AssemblyTitle>
@@ -12,9 +12,10 @@
     <FileVersion>0.0.0.0</FileVersion>
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <Authors>Ali Bahraminezhad</Authors>
-    <PackageLicenseUrl>http://www.opensource.org/licenses/MS-PL</PackageLicenseUrl>
+    <PackageLicenseFile>LICENCE</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/0x414c49/AzureHailstone</PackageProjectUrl>
     <PackageTags>Azure</PackageTags>
+    <Title>AzureHailstone</Title>
     <AssemblyName>AzureHailstone</AssemblyName>
     <RootNamespace>AzureHailstone</RootNamespace>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
