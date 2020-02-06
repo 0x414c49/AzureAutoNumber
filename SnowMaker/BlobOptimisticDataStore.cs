@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Net;
+﻿using System.Net;
 using System.Text;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
@@ -11,12 +10,10 @@ namespace SnowMaker
 {
     public class BlobOptimisticDataStore : IOptimisticDataStore
     {
-        const string SeedValue = "1";
-
-        readonly CloudBlobContainer blobContainer;
-
-        readonly ConcurrentDictionary<string, ICloudBlob> blobReferences;
-        readonly object blobReferencesLock = new object();
+        private const string SeedValue = "1";
+        private readonly CloudBlobContainer blobContainer;
+        private readonly ConcurrentDictionary<string, ICloudBlob> blobReferences;
+        private readonly object blobReferencesLock = new object();
 
         public BlobOptimisticDataStore(CloudStorageAccount account, string containerName)
         {
@@ -31,28 +28,28 @@ namespace SnowMaker
         public async Task<string> GetDataAsync(string blockName)
         {
             var blobReference = GetBlobReference(blockName);
-            using (var stream = new MemoryStream())
-            {
-                await blobReference.DownloadToStreamAsync(stream);
-                return Encoding.UTF8.GetString(stream.ToArray());
-            }
+
+            using var stream = new MemoryStream();
+            await blobReference.DownloadToStreamAsync(stream).ConfigureAwait(false);
+
+            return Encoding.UTF8.GetString(stream.ToArray());
         }
 
         public async Task<bool> Init()
-           => await blobContainer.CreateIfNotExistsAsync();
+           => await blobContainer.CreateIfNotExistsAsync().ConfigureAwait(false);
 
-        public bool TryOptimisticWrite(string scopeName, string data)
-            => TryOptimisticWriteAsync(scopeName, data).GetAwaiter().GetResult();
+        public bool TryOptimisticWrite(string blockName, string data)
+            => TryOptimisticWriteAsync(blockName, data).GetAwaiter().GetResult();
 
-        public async Task<bool> TryOptimisticWriteAsync(string scopeName, string data)
+        public async Task<bool> TryOptimisticWriteAsync(string blockName, string data)
         {
-            var blobReference = GetBlobReference(scopeName);
+            var blobReference = GetBlobReference(blockName);
             try
             {
                 await UploadTextAsync(
                         blobReference,
                         data,
-                        AccessCondition.GenerateIfMatchCondition(blobReference.Properties.ETag));
+                        AccessCondition.GenerateIfMatchCondition(blobReference.Properties.ETag)).ConfigureAwait(false);
             }
             catch (StorageException exc)
             {
@@ -76,12 +73,12 @@ namespace SnowMaker
         {
             var blobReference = blobContainer.GetBlockBlobReference(blockName);
 
-            if (await blobReference.ExistsAsync())
+            if (await blobReference.ExistsAsync().ConfigureAwait(false))
                 return blobReference;
 
             try
             {
-                await UploadTextAsync(blobReference, SeedValue, AccessCondition.GenerateIfNoneMatchCondition("*"));
+                await UploadTextAsync(blobReference, SeedValue, AccessCondition.GenerateIfNoneMatchCondition("*")).ConfigureAwait(false);
             }
             catch (StorageException uploadException)
             {
@@ -96,10 +93,9 @@ namespace SnowMaker
         {
             blob.Properties.ContentType = "utf-8";
             blob.Properties.ContentType = "text/plain";
-            using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(text)))
-            {
-                await blob.UploadFromStreamAsync(stream, accessCondition, null, null);
-            }
+
+            using var stream = new MemoryStream(Encoding.UTF8.GetBytes(text));
+            await blob.UploadFromStreamAsync(stream, accessCondition, null, null).ConfigureAwait(false);
         }
     }
 }
