@@ -72,7 +72,10 @@ steps:
   inputs:
     command: 'pack'
     packagesToPack: '**/AzureHailstone.csproj'
-    versioningScheme: 'byBuildNumber'
+    versioningScheme: 'byPrereleaseNumber'
+    majorVersion: '1'
+    minorVersion: '0'
+    patchVersion: '0'
 
 - task: DotNetCoreCLI@2
   displayName: 'Push NUGET'
