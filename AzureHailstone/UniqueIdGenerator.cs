@@ -60,7 +60,7 @@ namespace AzureHailstone
             }
         }
 
-        ScopeState GetScopeState(string scopeName)
+        private ScopeState GetScopeState(string scopeName)
         {
             return states.GetValue(
                 scopeName,
@@ -68,7 +68,7 @@ namespace AzureHailstone
                 () => new ScopeState());
         }
 
-        void UpdateFromSyncStore(string scopeName, ScopeState state)
+        private void UpdateFromSyncStore(string scopeName, ScopeState state)
         {
             var writesAttempted = 0;
 
@@ -78,10 +78,7 @@ namespace AzureHailstone
 
                 long nextId;
                 if (!long.TryParse(data, out nextId))
-                    throw new UniqueIdGenerationException(string.Format(
-                       "The id seed returned from storage for scope '{0}' was corrupt, and could not be parsed as a long. The data returned was: {1}",
-                       scopeName,
-                       data));
+                    throw new UniqueIdGenerationException($"The id seed returned from storage for scope '{scopeName}' was corrupt, and could not be parsed as a long. The data returned was: {data}");
 
                 state.LastId = nextId - 1;
                 state.HighestIdAvailableInBatch = nextId - 1 + BatchSize;
@@ -93,9 +90,7 @@ namespace AzureHailstone
                 writesAttempted++;
             }
 
-            throw new UniqueIdGenerationException(string.Format(
-                "Failed to update the data store after {0} attempts. This likely represents too much contention against the store. Increase the batch size to a value more appropriate to your generation load.",
-                writesAttempted));
+            throw new UniqueIdGenerationException($"Failed to update the data store after {writesAttempted} attempts. This likely represents too much contention against the store. Increase the batch size to a value more appropriate to your generation load.");
         }
     }
 }

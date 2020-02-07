@@ -17,19 +17,18 @@ namespace AzureHailstone
 
         public string GetData(string blockName)
         {
-            var blockPath = Path.Combine(directoryPath, string.Format("{0}.txt", blockName));
+            var blockPath = Path.Combine(directoryPath, $"{blockName}.txt");
             try
             {
                 return File.ReadAllText(blockPath);
             }
             catch (FileNotFoundException)
             {
-                using (var file = File.Create(blockPath))
+                FileStream file = File.Create(blockPath);
+
+                using (var streamWriter = new StreamWriter(file))
                 {
-                    using (var streamWriter = new StreamWriter(file))
-                    {
-                        streamWriter.Write(SeedValue);
-                    }
+                    streamWriter.Write(SeedValue);
                 }
 
                 return SeedValue;
@@ -48,7 +47,7 @@ namespace AzureHailstone
 
         public bool TryOptimisticWrite(string blockName, string data)
         {
-            var blockPath = Path.Combine(directoryPath, string.Format("{0}.txt", blockName));
+            var blockPath = Path.Combine(directoryPath, $"{blockName}.txt");
             File.WriteAllText(blockPath, data);
             return true;
         }
