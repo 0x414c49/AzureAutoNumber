@@ -29,10 +29,11 @@ namespace AzureHailstone
         {
             var blobReference = GetBlobReference(blockName);
 
-            using var stream = new MemoryStream();
-            await blobReference.DownloadToStreamAsync(stream).ConfigureAwait(false);
-
-            return Encoding.UTF8.GetString(stream.ToArray());
+            using (var stream = new MemoryStream())
+            {
+                await blobReference.DownloadToStreamAsync(stream).ConfigureAwait(false);
+                return Encoding.UTF8.GetString(stream.ToArray());
+            }
         }
 
         public async Task<bool> Init()
@@ -94,8 +95,10 @@ namespace AzureHailstone
             blob.Properties.ContentType = "utf-8";
             blob.Properties.ContentType = "text/plain";
 
-            using var stream = new MemoryStream(Encoding.UTF8.GetBytes(text));
-            await blob.UploadFromStreamAsync(stream, accessCondition, null, null).ConfigureAwait(false);
+            using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(text)))
+            {
+                await blob.UploadFromStreamAsync(stream, accessCondition, null, null).ConfigureAwait(false);
+            }
         }
     }
 }
