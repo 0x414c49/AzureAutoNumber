@@ -85,13 +85,3 @@ steps:
     nuGetFeedType: 'internal'
     publishVstsFeed: '62655922-e0f4-4811-9930-25713816f6b3/3cc18d67-e0b1-40f9-a03d-c942bc06ac50'
 
-- task: DotNetCoreCLI@2
-  displayName: 'Pushing to NuGET.org'
-  inputs:
-    command: 'custom'
-    custom: 'nuget push'
-    arguments: '''$(Build.ArtifactStagingDirectory)/*.nupkg'' -k nuget-api-key -s https://api.nuget.org/v3/index.json'
-
-
-
-
