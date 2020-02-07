@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AzureHailstone
+namespace AzureHailstone.Exceptions
 {
     public class UniqueIdGenerationException : Exception
     {

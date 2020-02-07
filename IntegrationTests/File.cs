@@ -2,6 +2,7 @@
 using System.IO;
 using NUnit.Framework;
 using AzureHailstone;
+using AzureHailstone.Interfaces;
 
 namespace IntegrationTests.cs
 {

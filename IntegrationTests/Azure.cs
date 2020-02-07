@@ -5,6 +5,7 @@ using NUnit.Framework;
 using AzureHailstone;
 using System.Text;
 using System.IO;
+using AzureHailstone.Interfaces;
 
 namespace IntegrationTests.cs
 {

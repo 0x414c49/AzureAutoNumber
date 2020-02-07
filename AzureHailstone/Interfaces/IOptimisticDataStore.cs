@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace AzureHailstone
+namespace AzureHailstone.Interfaces
 {
     public interface IOptimisticDataStore
     {

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
+using AzureHailstone.Extensions;
 using NUnit.Framework;
 
 namespace AzureHailstone.UnitTests

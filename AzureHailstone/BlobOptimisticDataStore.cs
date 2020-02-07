@@ -5,6 +5,9 @@ using Microsoft.WindowsAzure.Storage.Blob;
 using System.IO;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
+using AzureHailstone.Options;
+using AzureHailstone.Extensions;
+using AzureHailstone.Interfaces;
 
 namespace AzureHailstone
 {
@@ -20,6 +23,11 @@ namespace AzureHailstone
             var blobClient = account.CreateCloudBlobClient();
             blobContainer = blobClient.GetContainerReference(containerName.ToLower());
             blobReferences = new ConcurrentDictionary<string, ICloudBlob>();
+        }
+
+        public BlobOptimisticDataStore(CloudStorageAccount cloudStorageAccount, HailstoneOptions options)
+            : this(cloudStorageAccount, options.StorageContainerName)
+        {         
         }
 
         public string GetData(string blockName)

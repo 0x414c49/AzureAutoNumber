@@ -1,4 +1,8 @@
-﻿using System;
+﻿using AzureHailstone.Exceptions;
+using AzureHailstone.Extensions;
+using AzureHailstone.Interfaces;
+using AzureHailstone.Options;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading;
@@ -16,6 +20,16 @@ namespace AzureHailstone
         public UniqueIdGenerator(IOptimisticDataStore optimisticDataStore)
         {
             this.optimisticDataStore = optimisticDataStore;
+            optimisticDataStore.Init()
+                .GetAwaiter()
+                .GetResult();
+        }
+
+        public UniqueIdGenerator(IOptimisticDataStore optimisticDataStore, HailstoneOptions options)
+            : this(optimisticDataStore)
+        {
+            BatchSize = options.BatchSize;
+            MaxWriteAttempts = options.MaxWriteAttempts;
         }
 
         public int BatchSize { get; set; } = 100;

@@ -1,4 +1,6 @@
 ﻿using System;
+using AzureHailstone.Exceptions;
+using AzureHailstone.Interfaces;
 using NSubstitute;
 using NUnit.Framework;
 

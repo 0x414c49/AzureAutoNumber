@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using AzureHailstone.Interfaces;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace AzureHailstone
@@ -24,10 +25,13 @@ namespace AzureHailstone
             catch (FileNotFoundException)
             {
                 using (var file = File.Create(blockPath))
-                using (var streamWriter = new StreamWriter(file))
                 {
-                    streamWriter.Write(SeedValue);
+                    using (var streamWriter = new StreamWriter(file))
+                    {
+                        streamWriter.Write(SeedValue);
+                    }
                 }
+
                 return SeedValue;
             }
         }

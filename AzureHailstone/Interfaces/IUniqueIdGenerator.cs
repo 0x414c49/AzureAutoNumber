@@ -1,4 +1,4 @@
-namespace AzureHailstone
+namespace AzureHailstone.Interfaces
 {
     public interface IUniqueIdGenerator
     {
