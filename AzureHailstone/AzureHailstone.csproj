@@ -12,7 +12,7 @@
     <FileVersion>0.0.0.0</FileVersion>
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <Authors>Ali Bahraminezhad</Authors>
-    <PackageLicenseUrl>https://opensource.org/licenses/MS-PL</PackageLicenseUrl>
+    <PackageLicenseExpression>MS-PL</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/0x414c49/AzureHailstone</PackageProjectUrl>
     <PackageTags>Azure</PackageTags>
     <Title>AzureHailstone</Title>
@@ -40,7 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Update="LICENSE">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 </Project>
