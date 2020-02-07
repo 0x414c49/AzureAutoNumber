@@ -43,7 +43,7 @@ namespace AzureHailstone
 
         public Task<bool> Init()
         {
-            throw new System.NotImplementedException();
+            return Task.FromResult(true);
         }
 
         public bool TryOptimisticWrite(string blockName, string data)
