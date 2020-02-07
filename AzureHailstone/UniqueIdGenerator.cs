@@ -2,6 +2,7 @@
 using AzureHailstone.Extensions;
 using AzureHailstone.Interfaces;
 using AzureHailstone.Options;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -25,11 +26,11 @@ namespace AzureHailstone
                 .GetResult();
         }
 
-        public UniqueIdGenerator(IOptimisticDataStore optimisticDataStore, HailstoneOptions options)
+        public UniqueIdGenerator(IOptimisticDataStore optimisticDataStore, IOptions<HailstoneOptions> options)
             : this(optimisticDataStore)
         {
-            BatchSize = options.BatchSize;
-            MaxWriteAttempts = options.MaxWriteAttempts;
+            BatchSize = options.Value.BatchSize;
+            MaxWriteAttempts = options.Value.MaxWriteAttempts;
         }
 
         public int BatchSize { get; set; } = 100;

@@ -8,6 +8,7 @@ using System.Collections.Concurrent;
 using AzureHailstone.Options;
 using AzureHailstone.Extensions;
 using AzureHailstone.Interfaces;
+using Microsoft.Extensions.Options;
 
 namespace AzureHailstone
 {
@@ -25,8 +26,8 @@ namespace AzureHailstone
             blobReferences = new ConcurrentDictionary<string, ICloudBlob>();
         }
 
-        public BlobOptimisticDataStore(CloudStorageAccount cloudStorageAccount, HailstoneOptions options)
-            : this(cloudStorageAccount, options.StorageContainerName)
+        public BlobOptimisticDataStore(CloudStorageAccount cloudStorageAccount, IOptions<HailstoneOptions> options)
+            : this(cloudStorageAccount, options.Value.StorageContainerName)
         {         
         }
 
