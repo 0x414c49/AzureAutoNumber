@@ -8,6 +8,7 @@ namespace AutoNumber
     public static class ServiceCollectionExtensions
     {
         private const string AutoNumber = "AutoNumber";
+
         public static IServiceCollection AddAutoNumber(this IServiceCollection services)
         {
             services.AddOptions<AutoNumberOptions>()

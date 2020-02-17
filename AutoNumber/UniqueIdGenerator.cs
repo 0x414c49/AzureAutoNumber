@@ -10,14 +10,35 @@ using System.Threading;
 
 namespace AutoNumber
 {
+    /// <summary>
+    /// Generate a new incremental id regards the scope name 
+    /// </summary>
     public class UniqueIdGenerator : IUniqueIdGenerator
     {
+        #region fields
         private readonly IOptimisticDataStore optimisticDataStore;
-
         private readonly IDictionary<string, ScopeState> states = new Dictionary<string, ScopeState>();
         private readonly object statesLock = new object();
         private int maxWriteAttempts = 25;
+        #endregion
 
+        #region properties
+        public int BatchSize { get; set; } = 100;
+
+        public int MaxWriteAttempts
+        {
+            get { return maxWriteAttempts; }
+            set
+            {
+                if (value < 1)
+                    throw new ArgumentOutOfRangeException(nameof(value), value, "MaxWriteAttempts must be a positive number.");
+
+                maxWriteAttempts = value;
+            }
+        }
+        #endregion
+
+        #region ctor
         public UniqueIdGenerator(IOptimisticDataStore optimisticDataStore)
         {
             this.optimisticDataStore = optimisticDataStore;
@@ -33,20 +54,13 @@ namespace AutoNumber
             MaxWriteAttempts = options.Value.MaxWriteAttempts;
         }
 
-        public int BatchSize { get; set; } = 100;
+        #endregion
 
-        public int MaxWriteAttempts
-        {
-            get { return maxWriteAttempts; }
-            set
-            {
-                if (value < 1)
-                    throw new ArgumentOutOfRangeException(nameof(value), maxWriteAttempts, "MaxWriteAttempts must be a positive number.");
-
-                maxWriteAttempts = value;
-            }
-        }
-
+        /// <summary>
+        /// Generate a new incremental id regards the scope name
+        /// </summary>
+        /// <param name="scopeName"></param>
+        /// <returns></returns>
         public long NextId(string scopeName)
         {
             var state = GetScopeState(scopeName);
@@ -72,7 +86,7 @@ namespace AutoNumber
         {
             var writesAttempted = 0;
 
-            while (writesAttempted < maxWriteAttempts)
+            while (writesAttempted < MaxWriteAttempts)
             {
                 var data = optimisticDataStore.GetData(scopeName);
 
