@@ -71,7 +71,7 @@ steps:
   displayName: 'Package'
   inputs:
     command: 'pack'
-    packagesToPack: '**/AzureAutoNumber.csproj'
+    packagesToPack: '**/AutoNumber.csproj'
     versioningScheme: byPrereleaseNumber
     majorVersion: '1'
     minorVersion: '0'
