@@ -71,7 +71,7 @@ steps:
   displayName: 'Package'
   inputs:
     command: 'pack'
-    packagesToPack: '**/AzureHailstone.csproj'
+    packagesToPack: '**/AzureAutoNumber.csproj'
     versioningScheme: byPrereleaseNumber
     majorVersion: '1'
     minorVersion: '0'
