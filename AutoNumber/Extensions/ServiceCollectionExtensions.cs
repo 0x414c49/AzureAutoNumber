@@ -10,7 +10,7 @@ namespace AutoNumber
         private const string AutoNumber = "AutoNumber";
         public static IServiceCollection AddAutoNumber(this IServiceCollection services)
         {
-            services.AddOptions<HailstoneOptions>()
+            services.AddOptions<AutoNumberOptions>()
                     .Configure<IConfiguration>((settings, configuration)
                         => configuration.GetSection(AutoNumber).Bind(settings));
 

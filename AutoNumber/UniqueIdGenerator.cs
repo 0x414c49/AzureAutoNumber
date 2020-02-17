@@ -26,7 +26,7 @@ namespace AutoNumber
                 .GetResult();
         }
 
-        public UniqueIdGenerator(IOptimisticDataStore optimisticDataStore, IOptions<HailstoneOptions> options)
+        public UniqueIdGenerator(IOptimisticDataStore optimisticDataStore, IOptions<AutoNumberOptions> options)
             : this(optimisticDataStore)
         {
             BatchSize = options.Value.BatchSize;

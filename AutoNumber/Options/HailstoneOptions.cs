@@ -1,6 +1,6 @@
 ﻿namespace AutoNumber.Options
 {
-    public class HailstoneOptions
+    public class AutoNumberOptions
     {
         public int BatchSize { get; set; } = 100;
         public int MaxWriteAttempts { get; set; } = 100;

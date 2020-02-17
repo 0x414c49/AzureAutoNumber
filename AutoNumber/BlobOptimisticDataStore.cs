@@ -26,7 +26,7 @@ namespace AutoNumber
             blobReferences = new ConcurrentDictionary<string, ICloudBlob>();
         }
 
-        public BlobOptimisticDataStore(CloudStorageAccount cloudStorageAccount, IOptions<HailstoneOptions> options)
+        public BlobOptimisticDataStore(CloudStorageAccount cloudStorageAccount, IOptions<AutoNumberOptions> options)
             : this(cloudStorageAccount, options.Value.StorageContainerName)
         {      
         }

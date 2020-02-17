@@ -30,7 +30,7 @@ namespace AutoNumber.IntegrationTests
         {
             var serviceProvider = GenerateServiceProvider();
 
-            var options = serviceProvider.GetService<IOptions<Options.HailstoneOptions>>();
+            var options = serviceProvider.GetService<IOptions<Options.AutoNumberOptions>>();
 
             Assert.NotNull(options.Value);
             Assert.AreEqual(25, options.Value.MaxWriteAttempts);

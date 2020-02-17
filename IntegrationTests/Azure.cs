@@ -33,8 +33,8 @@ namespace IntegrationTests.cs
             public TestScope(CloudStorageAccount account)
             {
                 var ticks = DateTime.UtcNow.Ticks;
-                IdScopeName = string.Format("AutoNumbertest{0}", ticks);
-                ContainerName = string.Format("AutoNumbertest{0}", ticks);
+                IdScopeName = string.Format("autonumbertest{0}", ticks);
+                ContainerName = string.Format("autonumbertest{0}", ticks);
 
                 blobClient = account.CreateCloudBlobClient();
             }
