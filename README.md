@@ -30,7 +30,7 @@ var id2 = idGen.NextId("orders");
 ```
 
 ### With Microsoft DI
-The project has an extension method to add it and its dependencies to Microsoft ASP.NET DI. TThe only caveat is you need to registry type of  `CloudStorageAccount` in DI before registring `AutoNumber`.
+The project has an extension method to add it and its dependencies to Microsoft ASP.NET DI. The only caveat is you need to registry type of  `CloudStorageAccount` in DI before registring `AutoNumber`.
 
 
 ```
