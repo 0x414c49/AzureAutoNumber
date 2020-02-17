@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <ProductVersion>8.0.30703</ProductVersion>
-    <RootNamespace>AzureHailstone.UnitTests</RootNamespace>
-    <AssemblyName>AzureHailstone.UnitTests</AssemblyName>
+    <RootNamespace>AutoNumber.UnitTests</RootNamespace>
+    <AssemblyName>AutoNumber.UnitTests</AssemblyName>
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <AssemblyTitle>UnitTests</AssemblyTitle>
@@ -18,7 +18,7 @@
     <DebugType>pdbonly</DebugType>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AzureHailstone\AzureHailstone.csproj" />
+    <ProjectReference Include="..\AutoNumber\AutoNumber.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Castle.Core" Version="4.4.0" />

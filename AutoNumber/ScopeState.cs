@@ -1,4 +1,4 @@
-namespace AzureHailstone
+namespace AutoNumber
 {
     class ScopeState
     {

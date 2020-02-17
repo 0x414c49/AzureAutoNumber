@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AzureHailstone.Exceptions
+namespace AutoNumber.Exceptions
 {
     public class UniqueIdGenerationException : Exception
     {

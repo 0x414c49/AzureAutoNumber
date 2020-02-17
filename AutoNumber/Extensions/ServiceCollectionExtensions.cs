@@ -1,18 +1,18 @@
-﻿using AzureHailstone.Interfaces;
-using AzureHailstone.Options;
+﻿using AutoNumber.Interfaces;
+using AutoNumber.Options;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace AzureHailstone
+namespace AutoNumber
 {
     public static class ServiceCollectionExtensions
     {
-        private const string AzureHailstone = "AzureHailstone";
-        public static IServiceCollection AddAzureHailstone(this IServiceCollection services)
+        private const string AutoNumber = "AutoNumber";
+        public static IServiceCollection AddAutoNumber(this IServiceCollection services)
         {
             services.AddOptions<HailstoneOptions>()
                     .Configure<IConfiguration>((settings, configuration)
-                        => configuration.GetSection(AzureHailstone).Bind(settings));
+                        => configuration.GetSection(AutoNumber).Bind(settings));
 
             services.AddScoped<IOptimisticDataStore, BlobOptimisticDataStore>();
             services.AddSingleton<IUniqueIdGenerator, UniqueIdGenerator>();

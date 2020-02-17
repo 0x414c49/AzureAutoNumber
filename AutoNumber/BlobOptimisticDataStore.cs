@@ -5,12 +5,12 @@ using Microsoft.WindowsAzure.Storage.Blob;
 using System.IO;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
-using AzureHailstone.Options;
-using AzureHailstone.Extensions;
-using AzureHailstone.Interfaces;
+using AutoNumber.Options;
+using AutoNumber.Extensions;
+using AutoNumber.Interfaces;
 using Microsoft.Extensions.Options;
 
-namespace AzureHailstone
+namespace AutoNumber
 {
     public class BlobOptimisticDataStore : IOptimisticDataStore
     {

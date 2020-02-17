@@ -1,4 +1,4 @@
-namespace AzureHailstone.Interfaces
+namespace AutoNumber.Interfaces
 {
     public interface IUniqueIdGenerator
     {

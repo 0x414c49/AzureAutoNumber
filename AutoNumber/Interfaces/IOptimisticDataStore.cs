@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace AzureHailstone.Interfaces
+namespace AutoNumber.Interfaces
 {
     public interface IOptimisticDataStore
     {

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace AzureHailstone.Extensions
+namespace AutoNumber.Extensions
 {
     internal static class DictionaryExtensions
     {

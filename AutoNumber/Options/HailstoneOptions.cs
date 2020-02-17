@@ -1,4 +1,4 @@
-﻿namespace AzureHailstone.Options
+﻿namespace AutoNumber.Options
 {
     public class HailstoneOptions
     {

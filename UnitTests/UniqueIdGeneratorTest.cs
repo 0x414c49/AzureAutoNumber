@@ -1,10 +1,10 @@
 ﻿using System;
-using AzureHailstone.Exceptions;
-using AzureHailstone.Interfaces;
+using AutoNumber.Exceptions;
+using AutoNumber.Interfaces;
 using NSubstitute;
 using NUnit.Framework;
 
-namespace AzureHailstone.UnitTests
+namespace AutoNumber.UnitTests
 {
     [TestFixture]
     public class UniqueIdGeneratorTest

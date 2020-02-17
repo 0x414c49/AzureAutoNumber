@@ -1,14 +1,14 @@
-﻿using AzureHailstone.Exceptions;
-using AzureHailstone.Extensions;
-using AzureHailstone.Interfaces;
-using AzureHailstone.Options;
+﻿using AutoNumber.Exceptions;
+using AutoNumber.Extensions;
+using AutoNumber.Interfaces;
+using AutoNumber.Options;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading;
 
-namespace AzureHailstone
+namespace AutoNumber
 {
     public class UniqueIdGenerator : IUniqueIdGenerator
     {

@@ -1,8 +1,8 @@
-﻿using AzureHailstone.Interfaces;
+﻿using AutoNumber.Interfaces;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace AzureHailstone
+namespace AutoNumber
 {
     public class DebugOnlyFileDataStore : IOptimisticDataStore
     {

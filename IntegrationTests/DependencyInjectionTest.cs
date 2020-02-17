@@ -1,4 +1,4 @@
-﻿using AzureHailstone.Interfaces;
+﻿using AutoNumber.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -6,7 +6,7 @@ using Microsoft.WindowsAzure.Storage;
 using NUnit.Framework;
 using System.IO;
 
-namespace AzureHailstone.IntegrationTests
+namespace AutoNumber.IntegrationTests
 {
     [TestFixture]
     public class DependencyInjectionTest
@@ -44,7 +44,7 @@ namespace AzureHailstone.IntegrationTests
             var serviceCollection = new ServiceCollection();
             serviceCollection.AddSingleton(CloudStorageAccount.DevelopmentStorageAccount);
             serviceCollection.AddSingleton<IConfiguration>(Configuration);
-            serviceCollection.AddAzureHailstone();
+            serviceCollection.AddAutoNumber();
             return serviceCollection.BuildServiceProvider();
         }
     }

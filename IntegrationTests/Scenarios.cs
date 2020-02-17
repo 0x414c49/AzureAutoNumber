@@ -3,8 +3,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
-using AzureHailstone;
-using AzureHailstone.Interfaces;
+using AutoNumber;
+using AutoNumber.Interfaces;
 
 namespace IntegrationTests.cs
 {

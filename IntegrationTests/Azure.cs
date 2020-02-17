@@ -2,10 +2,10 @@
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using NUnit.Framework;
-using AzureHailstone;
+using AutoNumber;
 using System.Text;
 using System.IO;
-using AzureHailstone.Interfaces;
+using AutoNumber.Interfaces;
 
 namespace IntegrationTests.cs
 {
@@ -33,8 +33,8 @@ namespace IntegrationTests.cs
             public TestScope(CloudStorageAccount account)
             {
                 var ticks = DateTime.UtcNow.Ticks;
-                IdScopeName = string.Format("azurehailstonetest{0}", ticks);
-                ContainerName = string.Format("azurehailstonetest{0}", ticks);
+                IdScopeName = string.Format("AutoNumbertest{0}", ticks);
+                ContainerName = string.Format("AutoNumbertest{0}", ticks);
 
                 blobClient = account.CreateCloudBlobClient();
             }

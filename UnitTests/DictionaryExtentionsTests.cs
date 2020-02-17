@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
-using AzureHailstone.Extensions;
+using AutoNumber.Extensions;
 using NUnit.Framework;
 
-namespace AzureHailstone.UnitTests
+namespace AutoNumber.UnitTests
 {
     [TestFixture]
     public class DictionaryExtentionsTests
