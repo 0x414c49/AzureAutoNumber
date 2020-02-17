@@ -28,7 +28,7 @@ namespace AzureHailstone
 
         public BlobOptimisticDataStore(CloudStorageAccount cloudStorageAccount, IOptions<HailstoneOptions> options)
             : this(cloudStorageAccount, options.Value.StorageContainerName)
-        {         
+        {      
         }
 
         public string GetData(string blockName)
