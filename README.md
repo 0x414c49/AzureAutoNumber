@@ -1,6 +1,6 @@
 # Azure AutoNumber
 
-[![Build Status](https://alibahraminezhad0485.visualstudio.com/AutoNumber/_apis/build/status/0x414c49.AzureAutoNumber?branchName=master)](https://alibahraminezhad0485.visualstudio.com/AutoNumber/_build/latest?definitionId=5&branchName=master)
+![.NET Core](https://github.com/0x414c49/AzureAutoNumber/workflows/.NET%20Core/badge.svg)
 [![Build Status](https://img.shields.io/github/license/0x414c49/AzureAutoNumber)]()
 [![NuGet version (AzureAutoNumber)](https://img.shields.io/nuget/v/AzureAutoNumber.svg?style=flat-square)](https://www.nuget.org/packages/AzureAutoNumber/)
 
