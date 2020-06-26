@@ -1,8 +1,8 @@
 ﻿using AutoNumber.Interfaces;
+using Microsoft.Azure.Storage;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Microsoft.WindowsAzure.Storage;
 using NUnit.Framework;
 using System.IO;
 
