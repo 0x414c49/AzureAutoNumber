@@ -15,7 +15,7 @@ namespace AutoNumber
                     .Configure<IConfiguration>((settings, configuration)
                         => configuration.GetSection(AutoNumber).Bind(settings));
 
-            services.AddScoped<IOptimisticDataStore, BlobOptimisticDataStore>();
+            services.AddSingleton<IOptimisticDataStore, BlobOptimisticDataStore>();
             services.AddSingleton<IUniqueIdGenerator, UniqueIdGenerator>();
 
             return services;
