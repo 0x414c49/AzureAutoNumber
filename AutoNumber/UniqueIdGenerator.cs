@@ -11,7 +11,7 @@ using System.Threading;
 namespace AutoNumber
 {
     /// <summary>
-    /// Generate a new incremental id regards the scope name 
+    /// Generate a new incremental id regards the scope name
     /// </summary>
     public class UniqueIdGenerator : IUniqueIdGenerator
     {
@@ -54,6 +54,13 @@ namespace AutoNumber
             MaxWriteAttempts = options.Value.MaxWriteAttempts;
         }
 
+        public UniqueIdGenerator(IOptimisticDataStore optimisticDataStore, AutoNumberOptions options)
+            : this(optimisticDataStore)
+        {
+            BatchSize = options.BatchSize;
+            MaxWriteAttempts = options.MaxWriteAttempts;
+        }
+
         #endregion
 
         /// <summary>
@@ -90,8 +97,7 @@ namespace AutoNumber
             {
                 var data = optimisticDataStore.GetData(scopeName);
 
-                long nextId;
-                if (!long.TryParse(data, out nextId))
+                if (!long.TryParse(data, out long nextId))
                     throw new UniqueIdGenerationException($"The id seed returned from storage for scope '{scopeName}' was corrupt, and could not be parsed as a long. The data returned was: {data}");
 
                 state.LastId = nextId - 1;

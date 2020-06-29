@@ -28,7 +28,7 @@ namespace AutoNumber
 
         public BlobOptimisticDataStore(CloudStorageAccount cloudStorageAccount, IOptions<AutoNumberOptions> options)
             : this(cloudStorageAccount, options.Value.StorageContainerName)
-        {      
+        {
         }
 
         public string GetData(string blockName)
