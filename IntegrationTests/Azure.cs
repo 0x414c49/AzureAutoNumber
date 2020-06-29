@@ -1,11 +1,11 @@
 ﻿using System;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Blob;
 using NUnit.Framework;
 using AutoNumber;
 using System.Text;
 using System.IO;
 using AutoNumber.Interfaces;
+using Microsoft.Azure.Storage.Blob;
+using Microsoft.Azure.Storage;
 
 namespace IntegrationTests.cs
 {

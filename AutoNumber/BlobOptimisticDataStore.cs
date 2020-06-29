@@ -1,7 +1,6 @@
 ﻿using System.Net;
 using System.Text;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Blob;
+using Microsoft.Azure.Storage;
 using System.IO;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
@@ -9,6 +8,7 @@ using AutoNumber.Options;
 using AutoNumber.Extensions;
 using AutoNumber.Interfaces;
 using Microsoft.Extensions.Options;
+using Microsoft.Azure.Storage.Blob;
 
 namespace AutoNumber
 {
