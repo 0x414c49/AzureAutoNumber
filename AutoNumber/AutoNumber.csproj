@@ -5,7 +5,7 @@
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <AssemblyTitle>SnowMaker</AssemblyTitle>
     <Company></Company>
-    <Product>AutoNumber</Product>
+    <Product>AzureAutoNumber</Product>
     <Description>High performance, distributed unique id generator for Azure environments.</Description>
     <Version>1.2.1</Version>
     <AssemblyVersion>1.2.1.0</AssemblyVersion>
@@ -18,12 +18,13 @@
     <Title>AutoNumber</Title>
     <AssemblyName>AutoNumber</AssemblyName>
     <RootNamespace>AutoNumber</RootNamespace>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageReleaseNotes>Bug fixed:
 1. AddAutoNumber extension throws a scoping exception (aspnet core 3.1)
 
 Breacking changes:
 1. The AddAutoNumber is deprecated now, use another overload with options builder instead.</PackageReleaseNotes>
+    <PackageId>AzureAutoNumber</PackageId>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>full</DebugType>
