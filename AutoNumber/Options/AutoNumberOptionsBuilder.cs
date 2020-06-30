@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Azure.Storage;
+using Microsoft.Extensions.Configuration;
 using System;
 
 namespace AutoNumber.Options
@@ -37,6 +38,14 @@ namespace AutoNumber.Options
 
             Options.StorageAccountConnectionString =
                 _configuration.GetConnectionString(connectionStringOrName) ?? connectionStringOrName;
+
+            return this;
+        }
+
+        public AutoNumberOptionsBuilder UseStorageAccount(CloudStorageAccount storageAccount)
+        {
+            Options.CloudStorageAccount = storageAccount 
+                    ?? throw new ArgumentNullException(nameof(storageAccount));
 
             return this;
         }

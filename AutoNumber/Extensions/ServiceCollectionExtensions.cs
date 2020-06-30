@@ -35,7 +35,9 @@ namespace AutoNumber
             {
                 CloudStorageAccount storageAccount = null;
 
-                if (options.StorageAccountConnectionString == null)
+                if (options.CloudStorageAccount != null)
+                    storageAccount = options.CloudStorageAccount;
+                else if (options.StorageAccountConnectionString == null)
                     storageAccount = x.GetService<CloudStorageAccount>();
                 else
                     storageAccount = CloudStorageAccount.Parse(options.StorageAccountConnectionString);
