@@ -30,11 +30,30 @@ var id2 = idGen.NextId("orders");
 ```
 
 ### With Microsoft DI
-The project has an extension method to add it and its dependencies to Microsoft ASP.NET DI. The only caveat is you need to registry type of  `CloudStorageAccount` in DI before registring `AutoNumber`.
+The project has an extension method to add it and its dependencies to Microsoft ASP.NET DI. ~~The only caveat is you need to registry type of  `CloudStorageAccount` in DI before registring `AutoNumber`.~~
+
+
+Use options builder to configure the service, take into account the default settings will read from `appsettings.json`.
+
+```
+services.AddAutoNumber(Configuration, x =>
+{
+	return x.UseContainerName("container-name")
+	 .UseStorageAccount("connection-string-or-connection-string-name")
+   //.UseStorageAccount(cloudStorageAccountInstance)
+	 .SetBatchSize(10)
+	 .SetMaxWriteAttempts(100)
+	 .Options;
+});
+```
+
+
+#### Deprecated way to register the service:
 
 
 ```
 // configure the services
+// you need to register an instane of CloudStorageAccount before using this
 serviceCollection.AddAutoNumber();
 
 // Inject `IUniqueIdGenerator` in constructor
