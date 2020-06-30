@@ -55,8 +55,9 @@ services.AddAutoNumber(Configuration, x =>
 // configure the services
 // you need to register an instane of CloudStorageAccount before using this
 serviceCollection.AddAutoNumber();
+```
 
-// Inject `IUniqueIdGenerator` in constructor
+### Inject `IUniqueIdGenerator` in constructor
 
 public class Foo
 {
