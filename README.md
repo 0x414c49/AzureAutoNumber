@@ -57,8 +57,9 @@ services.AddAutoNumber(Configuration, x =>
 serviceCollection.AddAutoNumber();
 ```
 
-### Inject `IUniqueIdGenerator` in constructor
+#### Inject `IUniqueIdGenerator` in constructor
 
+```
 public class Foo
 {
   public Foo(IUniqueIdGenerator idGenerator)
