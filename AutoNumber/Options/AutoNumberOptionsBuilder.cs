@@ -44,7 +44,7 @@ namespace AutoNumber.Options
 
         public AutoNumberOptionsBuilder UseStorageAccount(CloudStorageAccount storageAccount)
         {
-            Options.CloudStorageAccount = storageAccount 
+            Options.CloudStorageAccount = storageAccount
                     ?? throw new ArgumentNullException(nameof(storageAccount));
 
             return this;

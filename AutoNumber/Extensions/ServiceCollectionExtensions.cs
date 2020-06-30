@@ -11,6 +11,7 @@ namespace AutoNumber
     {
         private const string AutoNumber = "AutoNumber";
 
+        [Obsolete("This method is deprecated, please use AddAutoNumber with options builder.", error: false)]
         public static IServiceCollection AddAutoNumber(this IServiceCollection services)
         {
             services.AddOptions<AutoNumberOptions>()
