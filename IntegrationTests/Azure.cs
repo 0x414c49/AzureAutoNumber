@@ -10,9 +10,9 @@ using Microsoft.Azure.Storage;
 namespace IntegrationTests.cs
 {
     [TestFixture]
-    public class Azure : Scenarios<Azure.TestScope>
+    public class Azure : Scenarios<TestScope>
     {
-        readonly CloudStorageAccount storageAccount = CloudStorageAccount.DevelopmentStorageAccount;
+        private readonly CloudStorageAccount storageAccount = CloudStorageAccount.DevelopmentStorageAccount;
 
         protected override TestScope BuildTestScope()
         {
@@ -25,39 +25,39 @@ namespace IntegrationTests.cs
             blobOptimisticDataStore.Init().GetAwaiter().GetResult();
             return blobOptimisticDataStore;
         }
+    }
 
-        public sealed class TestScope : ITestScope
+    public sealed class TestScope : ITestScope
+    {
+        private readonly CloudBlobClient blobClient;
+
+        public TestScope(CloudStorageAccount account)
         {
-            readonly CloudBlobClient blobClient;
+            var ticks = DateTime.UtcNow.Ticks;
+            IdScopeName = string.Format("autonumbertest{0}", ticks);
+            ContainerName = string.Format("autonumbertest{0}", ticks);
 
-            public TestScope(CloudStorageAccount account)
+            blobClient = account.CreateCloudBlobClient();
+        }
+
+        public string IdScopeName { get; }
+        public string ContainerName { get; }
+
+        public string ReadCurrentPersistedValue()
+        {
+            var blobContainer = blobClient.GetContainerReference(ContainerName);
+            var blob = blobContainer.GetBlockBlobReference(IdScopeName);
+            using (var stream = new MemoryStream())
             {
-                var ticks = DateTime.UtcNow.Ticks;
-                IdScopeName = string.Format("autonumbertest{0}", ticks);
-                ContainerName = string.Format("autonumbertest{0}", ticks);
-
-                blobClient = account.CreateCloudBlobClient();
+                blob.DownloadToStreamAsync(stream).GetAwaiter().GetResult();
+                return Encoding.UTF8.GetString(stream.ToArray());
             }
+        }
 
-            public string IdScopeName { get; }
-            public string ContainerName { get; }
-
-            public string ReadCurrentPersistedValue()
-            {
-                var blobContainer = blobClient.GetContainerReference(ContainerName);
-                var blob = blobContainer.GetBlockBlobReference(IdScopeName);
-                using (var stream = new MemoryStream())
-                {
-                    blob.DownloadToStreamAsync(stream).GetAwaiter().GetResult();
-                    return Encoding.UTF8.GetString(stream.ToArray());
-                }
-            }
-
-            public void Dispose()
-            {
-                var blobContainer = blobClient.GetContainerReference(ContainerName);
-                blobContainer.DeleteAsync().GetAwaiter().GetResult();
-            }
+        public void Dispose()
+        {
+            var blobContainer = blobClient.GetContainerReference(ContainerName);
+            blobContainer.DeleteAsync().GetAwaiter().GetResult();
         }
     }
 }
