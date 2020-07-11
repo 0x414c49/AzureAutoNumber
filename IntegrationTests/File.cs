@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
-using NUnit.Framework;
 using AutoNumber;
 using AutoNumber.Interfaces;
+using NUnit.Framework;
 
 namespace IntegrationTests.cs
 {
@@ -30,8 +30,9 @@ namespace IntegrationTests.cs
                 Directory.CreateDirectory(DirectoryPath);
             }
 
-            public string IdScopeName { get; private set; }
-            public string DirectoryPath { get; private set; }
+            public string DirectoryPath { get; }
+
+            public string IdScopeName { get; }
 
             public string ReadCurrentPersistedValue()
             {

@@ -1,11 +1,11 @@
-﻿using AutoNumber.Interfaces;
+﻿using System.IO;
+using AutoNumber.Interfaces;
 using AutoNumber.Options;
 using Microsoft.Azure.Storage;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using NUnit.Framework;
-using System.IO;
 
 namespace AutoNumber.IntegrationTests
 {
@@ -13,30 +13,16 @@ namespace AutoNumber.IntegrationTests
     public class DependencyInjectionTest
     {
         public IConfigurationRoot Configuration = new ConfigurationBuilder()
-                    .SetBasePath(Directory.GetCurrentDirectory())
-                    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true).Build();
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", true, true).Build();
 
-        [Test]
-        public void ShouldCraeteUniqueIdGenerator()
+        private ServiceProvider GenerateServiceProvider()
         {
-            var serviceProvider = GenerateServiceProvider();
-
-            var uniqueId = serviceProvider.GetService<IUniqueIdGenerator>();
-
-            Assert.NotNull(uniqueId);
-        }
-
-        [Test]
-        public void ShouldOptionsContainsDefaultValues()
-        {
-            var serviceProvider = GenerateServiceProvider();
-
-            var options = serviceProvider.GetService<IOptions<AutoNumberOptions>>();
-
-            Assert.NotNull(options.Value);
-            Assert.AreEqual(25, options.Value.MaxWriteAttempts);
-            Assert.AreEqual(50, options.Value.BatchSize);
-            Assert.AreEqual("unique-urls", options.Value.StorageContainerName);
+            var serviceCollection = new ServiceCollection();
+            serviceCollection.AddSingleton(CloudStorageAccount.DevelopmentStorageAccount);
+            serviceCollection.AddSingleton<IConfiguration>(Configuration);
+            serviceCollection.AddAutoNumber();
+            return serviceCollection.BuildServiceProvider();
         }
 
         [Test]
@@ -68,6 +54,29 @@ namespace AutoNumber.IntegrationTests
         }
 
         [Test]
+        public void ShouldCraeteUniqueIdGenerator()
+        {
+            var serviceProvider = GenerateServiceProvider();
+
+            var uniqueId = serviceProvider.GetService<IUniqueIdGenerator>();
+
+            Assert.NotNull(uniqueId);
+        }
+
+        [Test]
+        public void ShouldOptionsContainsDefaultValues()
+        {
+            var serviceProvider = GenerateServiceProvider();
+
+            var options = serviceProvider.GetService<IOptions<AutoNumberOptions>>();
+
+            Assert.NotNull(options.Value);
+            Assert.AreEqual(25, options.Value.MaxWriteAttempts);
+            Assert.AreEqual(50, options.Value.BatchSize);
+            Assert.AreEqual("unique-urls", options.Value.StorageContainerName);
+        }
+
+        [Test]
         public void ShouldResolveUniqueIdGenerator()
         {
             var serviceCollection = new ServiceCollection();
@@ -76,25 +85,16 @@ namespace AutoNumber.IntegrationTests
             serviceCollection.AddAutoNumber(Configuration, x =>
             {
                 return x.UseContainerName("ali")
-                 .UseDefaultStorageAccount()
-                 .SetBatchSize(10)
-                 .SetMaxWriteAttempts(100)
-                 .Options;
+                    .UseDefaultStorageAccount()
+                    .SetBatchSize(10)
+                    .SetMaxWriteAttempts()
+                    .Options;
             });
 
             var service = serviceCollection.BuildServiceProvider()
-                                           .GetService<IUniqueIdGenerator>();
+                .GetService<IUniqueIdGenerator>();
 
             Assert.NotNull(service);
-        }
-
-        private ServiceProvider GenerateServiceProvider()
-        {
-            var serviceCollection = new ServiceCollection();
-            serviceCollection.AddSingleton(CloudStorageAccount.DevelopmentStorageAccount);
-            serviceCollection.AddSingleton<IConfiguration>(Configuration);
-            serviceCollection.AddAutoNumber();
-            return serviceCollection.BuildServiceProvider();
         }
     }
 }

@@ -2,9 +2,9 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using NUnit.Framework;
 using AutoNumber;
 using AutoNumber.Interfaces;
+using NUnit.Framework;
 
 namespace IntegrationTests.cs
 {
@@ -20,7 +20,7 @@ namespace IntegrationTests.cs
             using (var testScope = BuildTestScope())
             {
                 var store = BuildStore(testScope);
-                var generator = new UniqueIdGenerator(store) { BatchSize = 3 };
+                var generator = new UniqueIdGenerator(store) {BatchSize = 3};
 
                 // Act
                 var generatedId = generator.NextId(testScope.IdScopeName);
@@ -37,7 +37,7 @@ namespace IntegrationTests.cs
             using (var testScope = BuildTestScope())
             {
                 var store = BuildStore(testScope);
-                var generator = new UniqueIdGenerator(store) { BatchSize = 3 };
+                var generator = new UniqueIdGenerator(store) {BatchSize = 3};
 
                 // Act
                 generator.NextId(testScope.IdScopeName); //1
@@ -54,7 +54,7 @@ namespace IntegrationTests.cs
             using (var testScope = BuildTestScope())
             {
                 var store = BuildStore(testScope);
-                var generator = new UniqueIdGenerator(store) { BatchSize = 3 };
+                var generator = new UniqueIdGenerator(store) {BatchSize = 3};
 
                 // Act
                 generator.NextId(testScope.IdScopeName); //1
@@ -73,7 +73,7 @@ namespace IntegrationTests.cs
             using (var testScope = BuildTestScope())
             {
                 var store = BuildStore(testScope);
-                var generator = new UniqueIdGenerator(store) { BatchSize = 3 };
+                var generator = new UniqueIdGenerator(store) {BatchSize = 3};
 
                 // Act
                 generator.NextId(testScope.IdScopeName); //1
@@ -93,9 +93,9 @@ namespace IntegrationTests.cs
             using (var testScope = BuildTestScope())
             {
                 var store1 = BuildStore(testScope);
-                var generator1 = new UniqueIdGenerator(store1) { BatchSize = 3 };
+                var generator1 = new UniqueIdGenerator(store1) {BatchSize = 3};
                 var store2 = BuildStore(testScope);
-                var generator2 = new UniqueIdGenerator(store2) { BatchSize = 3 };
+                var generator2 = new UniqueIdGenerator(store2) {BatchSize = 3};
 
                 // Act
                 generator1.NextId(testScope.IdScopeName); //1
@@ -116,9 +116,9 @@ namespace IntegrationTests.cs
             using (var testScope = BuildTestScope())
             {
                 var store1 = BuildStore(testScope);
-                var generator1 = new UniqueIdGenerator(store1) { BatchSize = 3 };
+                var generator1 = new UniqueIdGenerator(store1) {BatchSize = 3};
                 var store2 = BuildStore(testScope);
-                var generator2 = new UniqueIdGenerator(store2) { BatchSize = 3 };
+                var generator2 = new UniqueIdGenerator(store2) {BatchSize = 3};
 
                 // Act
                 var generatedIds = new[]
@@ -132,12 +132,12 @@ namespace IntegrationTests.cs
                     generator2.NextId(testScope.IdScopeName), //6
                     generator2.NextId(testScope.IdScopeName), //10
                     generator1.NextId(testScope.IdScopeName), //8
-                    generator1.NextId(testScope.IdScopeName)  //9
+                    generator1.NextId(testScope.IdScopeName) //9
                 };
 
                 // Assert
                 CollectionAssert.AreEqual(
-                    new[] { 1, 2, 3, 4, 7, 5, 6, 10, 8, 9 },
+                    new[] {1, 2, 3, 4, 7, 5, 6, 10, 8, 9},
                     generatedIds);
             }
         }
@@ -149,7 +149,7 @@ namespace IntegrationTests.cs
             using (var testScope = BuildTestScope())
             {
                 var store = BuildStore(testScope);
-                var generator = new UniqueIdGenerator(store) { BatchSize = 1000 };
+                var generator = new UniqueIdGenerator(store) {BatchSize = 1000};
                 const int testLength = 10000;
 
                 // Act
@@ -159,7 +159,7 @@ namespace IntegrationTests.cs
                 Parallel.For(
                     0,
                     testLength,
-                    new ParallelOptions { MaxDegreeOfParallelism = 10 },
+                    new ParallelOptions {MaxDegreeOfParallelism = 10},
                     i =>
                     {
                         generatedIds.Enqueue(generator.NextId(scopeName));

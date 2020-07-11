@@ -1,14 +1,15 @@
-﻿using AutoNumber.Interfaces;
+﻿using System;
 using System.IO;
 using System.Threading.Tasks;
+using AutoNumber.Interfaces;
 
 namespace AutoNumber
 {
     public class DebugOnlyFileDataStore : IOptimisticDataStore
     {
-        const string SeedValue = "1";
+        private const string SeedValue = "1";
 
-        readonly string directoryPath;
+        private readonly string directoryPath;
 
         public DebugOnlyFileDataStore(string directoryPath)
         {
@@ -24,7 +25,7 @@ namespace AutoNumber
             }
             catch (FileNotFoundException)
             {
-                FileStream file = File.Create(blockPath);
+                var file = File.Create(blockPath);
 
                 using (var streamWriter = new StreamWriter(file))
                 {
@@ -37,7 +38,7 @@ namespace AutoNumber
 
         public Task<string> GetDataAsync(string blockName)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public Task<bool> Init()
@@ -54,7 +55,7 @@ namespace AutoNumber
 
         public Task<bool> TryOptimisticWriteAsync(string blockName, string data)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
     }
 }

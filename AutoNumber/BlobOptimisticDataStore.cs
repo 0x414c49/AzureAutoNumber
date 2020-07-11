@@ -1,14 +1,14 @@
-﻿using System.Net;
-using System.Text;
-using Microsoft.Azure.Storage;
+﻿using System.Collections.Concurrent;
 using System.IO;
+using System.Net;
+using System.Text;
 using System.Threading.Tasks;
-using System.Collections.Concurrent;
-using AutoNumber.Options;
 using AutoNumber.Extensions;
 using AutoNumber.Interfaces;
-using Microsoft.Extensions.Options;
+using AutoNumber.Options;
+using Microsoft.Azure.Storage;
 using Microsoft.Azure.Storage.Blob;
+using Microsoft.Extensions.Options;
 
 namespace AutoNumber
 {
@@ -32,7 +32,9 @@ namespace AutoNumber
         }
 
         public string GetData(string blockName)
-            => GetDataAsync(blockName).GetAwaiter().GetResult();
+        {
+            return GetDataAsync(blockName).GetAwaiter().GetResult();
+        }
 
         public async Task<string> GetDataAsync(string blockName)
         {
@@ -46,10 +48,14 @@ namespace AutoNumber
         }
 
         public async Task<bool> Init()
-           => await blobContainer.CreateIfNotExistsAsync().ConfigureAwait(false);
+        {
+            return await blobContainer.CreateIfNotExistsAsync().ConfigureAwait(false);
+        }
 
         public bool TryOptimisticWrite(string blockName, string data)
-            => TryOptimisticWriteAsync(blockName, data).GetAwaiter().GetResult();
+        {
+            return TryOptimisticWriteAsync(blockName, data).GetAwaiter().GetResult();
+        }
 
         public async Task<bool> TryOptimisticWriteAsync(string blockName, string data)
         {
@@ -57,17 +63,18 @@ namespace AutoNumber
             try
             {
                 await UploadTextAsync(
-                        blobReference,
-                        data,
-                        AccessCondition.GenerateIfMatchCondition(blobReference.Properties.ETag)).ConfigureAwait(false);
+                    blobReference,
+                    data,
+                    AccessCondition.GenerateIfMatchCondition(blobReference.Properties.ETag)).ConfigureAwait(false);
             }
             catch (StorageException exc)
             {
-                if (exc.RequestInformation.HttpStatusCode == (int)HttpStatusCode.PreconditionFailed)
+                if (exc.RequestInformation.HttpStatusCode == (int) HttpStatusCode.PreconditionFailed)
                     return false;
 
                 throw;
             }
+
             return true;
         }
 
@@ -88,11 +95,12 @@ namespace AutoNumber
 
             try
             {
-                await UploadTextAsync(blobReference, SeedValue, AccessCondition.GenerateIfNoneMatchCondition("*")).ConfigureAwait(false);
+                await UploadTextAsync(blobReference, SeedValue, AccessCondition.GenerateIfNoneMatchCondition("*"))
+                    .ConfigureAwait(false);
             }
             catch (StorageException uploadException)
             {
-                if (uploadException.RequestInformation.HttpStatusCode != (int)HttpStatusCode.Conflict)
+                if (uploadException.RequestInformation.HttpStatusCode != (int) HttpStatusCode.Conflict)
                     throw;
             }
 
