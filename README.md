@@ -4,7 +4,6 @@
 [![Build Status](https://img.shields.io/github/license/0x414c49/AzureAutoNumber)]()
 [![NuGet version (AzureAutoNumber)](https://img.shields.io/nuget/v/AzureAutoNumber.svg?style=flat-square)](https://www.nuget.org/packages/AzureAutoNumber/)
 
-
 High performance, distributed unique thread-safe id generator for Azure.
 
 - Human-friendly generated ids (number)
@@ -81,6 +80,8 @@ These are default configuration for `AutoNumber`. If you prefer registering Auto
   }
 }
 ```
+### Support
+Support this proejct and me via [paypal](paypal.me/alibahraminezhad)
 
 
 ## Credits
