@@ -81,7 +81,7 @@ These are default configuration for `AutoNumber`. If you prefer registering Auto
 }
 ```
 ### Support
-Support this proejct and me via [paypal](paypal.me/alibahraminezhad)
+Support this proejct and me via [paypal](https://paypal.me/alibahraminezhad)
 
 
 ## Credits
