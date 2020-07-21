@@ -1,11 +1,11 @@
 ﻿using System;
-using NUnit.Framework;
-using AutoNumber;
-using System.Text;
 using System.IO;
+using System.Text;
+using AutoNumber;
 using AutoNumber.Interfaces;
-using Microsoft.Azure.Storage.Blob;
 using Microsoft.Azure.Storage;
+using Microsoft.Azure.Storage.Blob;
+using NUnit.Framework;
 
 namespace IntegrationTests.cs
 {
@@ -40,8 +40,9 @@ namespace IntegrationTests.cs
             blobClient = account.CreateCloudBlobClient();
         }
 
-        public string IdScopeName { get; }
         public string ContainerName { get; }
+
+        public string IdScopeName { get; }
 
         public string ReadCurrentPersistedValue()
         {

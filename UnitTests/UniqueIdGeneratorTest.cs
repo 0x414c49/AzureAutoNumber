@@ -19,58 +19,29 @@ namespace AutoNumber.UnitTests
         }
 
         [Test]
-        public void MaxWriteAttemptsShouldThrowArgumentOutOfRangeExceptionWhenValueIsZero()
-        {
-            var store = Substitute.For<IOptimisticDataStore>();
-            Assert.That(() =>
-               // ReSharper disable once ObjectCreationAsStatement
-               new UniqueIdGenerator(store)
-               {
-                   MaxWriteAttempts = 0
-               }
-            , Throws.TypeOf<ArgumentOutOfRangeException>());
-        }
-
-        [Test]
         public void MaxWriteAttemptsShouldThrowArgumentOutOfRangeExceptionWhenValueIsNegative()
         {
             var store = Substitute.For<IOptimisticDataStore>();
             Assert.That(() =>
-               // ReSharper disable once ObjectCreationAsStatement
-               new UniqueIdGenerator(store)
-               {
-                   MaxWriteAttempts = -1
-               }
-            , Throws.TypeOf<ArgumentOutOfRangeException>());
+                    // ReSharper disable once ObjectCreationAsStatement
+                    new UniqueIdGenerator(store)
+                    {
+                        MaxWriteAttempts = -1
+                    }
+                , Throws.TypeOf<ArgumentOutOfRangeException>());
         }
 
         [Test]
-        public void NextIdShouldThrowExceptionOnCorruptData()
+        public void MaxWriteAttemptsShouldThrowArgumentOutOfRangeExceptionWhenValueIsZero()
         {
             var store = Substitute.For<IOptimisticDataStore>();
-            store.GetData("test").Returns("abc");
-
             Assert.That(() =>
-            {
-                var generator = new UniqueIdGenerator(store);
-                generator.NextId("test");
-            }
-            , Throws.TypeOf<UniqueIdGenerationException>());
-
-        }
-
-        [Test]
-        public void NextIdShouldThrowExceptionOnNullData()
-        {
-            var store = Substitute.For<IOptimisticDataStore>();
-            store.GetData("test").Returns((string)null);
-
-            Assert.That(() =>
-            {
-                var generator = new UniqueIdGenerator(store);
-                generator.NextId("test");
-            }
-            , Throws.TypeOf<UniqueIdGenerationException>());
+                    // ReSharper disable once ObjectCreationAsStatement
+                    new UniqueIdGenerator(store)
+                    {
+                        MaxWriteAttempts = 0
+                    }
+                , Throws.TypeOf<ArgumentOutOfRangeException>());
         }
 
         [Test]
@@ -112,6 +83,34 @@ namespace AutoNumber.UnitTests
         }
 
         [Test]
+        public void NextIdShouldThrowExceptionOnCorruptData()
+        {
+            var store = Substitute.For<IOptimisticDataStore>();
+            store.GetData("test").Returns("abc");
+
+            Assert.That(() =>
+                {
+                    var generator = new UniqueIdGenerator(store);
+                    generator.NextId("test");
+                }
+                , Throws.TypeOf<UniqueIdGenerationException>());
+        }
+
+        [Test]
+        public void NextIdShouldThrowExceptionOnNullData()
+        {
+            var store = Substitute.For<IOptimisticDataStore>();
+            store.GetData("test").Returns((string) null);
+
+            Assert.That(() =>
+                {
+                    var generator = new UniqueIdGenerator(store);
+                    generator.NextId("test");
+                }
+                , Throws.TypeOf<UniqueIdGenerationException>());
+        }
+
+        [Test]
         public void NextIdShouldThrowExceptionWhenRetriesAreExhausted()
         {
             var store = Substitute.For<IOptimisticDataStore>();
@@ -132,6 +131,7 @@ namespace AutoNumber.UnitTests
                 StringAssert.StartsWith("Failed to update the data store after 3 attempts.", ex.Message);
                 return;
             }
+
             Assert.Fail("NextId should have thrown and been caught in the try block");
         }
     }

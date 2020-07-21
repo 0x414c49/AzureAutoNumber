@@ -1,9 +1,9 @@
-﻿using AutoNumber.Interfaces;
+﻿using System;
+using AutoNumber.Interfaces;
 using AutoNumber.Options;
 using Microsoft.Azure.Storage;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 
 namespace AutoNumber
 {
@@ -11,12 +11,12 @@ namespace AutoNumber
     {
         private const string AutoNumber = "AutoNumber";
 
-        [Obsolete("This method is deprecated, please use AddAutoNumber with options builder.", error: false)]
+        [Obsolete("This method is deprecated, please use AddAutoNumber with options builder.", false)]
         public static IServiceCollection AddAutoNumber(this IServiceCollection services)
         {
             services.AddOptions<AutoNumberOptions>()
-                    .Configure<IConfiguration>((settings, configuration)
-                        => configuration.GetSection(AutoNumber).Bind(settings));
+                .Configure<IConfiguration>((settings, configuration)
+                    => configuration.GetSection(AutoNumber).Bind(settings));
 
             services.AddSingleton<IOptimisticDataStore, BlobOptimisticDataStore>();
             services.AddSingleton<IUniqueIdGenerator, UniqueIdGenerator>();
@@ -24,7 +24,8 @@ namespace AutoNumber
             return services;
         }
 
-        public static IServiceCollection AddAutoNumber(this IServiceCollection services, IConfiguration configuration, Func<AutoNumberOptionsBuilder, AutoNumberOptions> builder)
+        public static IServiceCollection AddAutoNumber(this IServiceCollection services, IConfiguration configuration,
+            Func<AutoNumberOptionsBuilder, AutoNumberOptions> builder)
         {
             if (builder == null)
                 throw new ArgumentNullException(nameof(builder));

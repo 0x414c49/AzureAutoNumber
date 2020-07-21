@@ -1,16 +1,14 @@
-﻿using Microsoft.Azure.Storage;
+﻿using System;
+using Microsoft.Azure.Storage;
 using Microsoft.Extensions.Configuration;
-using System;
 
 namespace AutoNumber.Options
 {
     public class AutoNumberOptionsBuilder
     {
-        private readonly IConfiguration _configuration;
         private const string DefaultContainerName = "unique-urls";
         private const string AutoNumber = "AutoNumber";
-
-        public AutoNumberOptions Options { get; } = new AutoNumberOptions();
+        private readonly IConfiguration _configuration;
 
         public AutoNumberOptionsBuilder(IConfiguration configuration)
         {
@@ -18,8 +16,10 @@ namespace AutoNumber.Options
             configuration.GetSection(AutoNumber).Bind(Options);
         }
 
+        public AutoNumberOptions Options { get; } = new AutoNumberOptions();
+
         /// <summary>
-        /// Uses the default StorageAccount already defined in dependency injection
+        ///     Uses the default StorageAccount already defined in dependency injection
         /// </summary>
         public AutoNumberOptionsBuilder UseDefaultStorageAccount()
         {
@@ -28,7 +28,7 @@ namespace AutoNumber.Options
         }
 
         /// <summary>
-        /// Uses an Azure StorageAccount connection string to init the blob storage
+        ///     Uses an Azure StorageAccount connection string to init the blob storage
         /// </summary>
         /// <param name="connectionStringOrName"></param>
         public AutoNumberOptionsBuilder UseStorageAccount(string connectionStringOrName)
@@ -45,13 +45,13 @@ namespace AutoNumber.Options
         public AutoNumberOptionsBuilder UseStorageAccount(CloudStorageAccount storageAccount)
         {
             Options.CloudStorageAccount = storageAccount
-                    ?? throw new ArgumentNullException(nameof(storageAccount));
+                                          ?? throw new ArgumentNullException(nameof(storageAccount));
 
             return this;
         }
 
         /// <summary>
-        /// Default container name to store latest generated id on Azure blob storage
+        ///     Default container name to store latest generated id on Azure blob storage
         /// </summary>
         public AutoNumberOptionsBuilder UseDefaultContainerName()
         {
@@ -60,7 +60,7 @@ namespace AutoNumber.Options
         }
 
         /// <summary>
-        /// Container name for storing latest generated id on Azure blob storage
+        ///     Container name for storing latest generated id on Azure blob storage
         /// </summary>
         /// <param name="containerName"></param>
         public AutoNumberOptionsBuilder UseContainerName(string containerName)
@@ -70,7 +70,7 @@ namespace AutoNumber.Options
         }
 
         /// <summary>
-        /// Max retrying to generate unique id
+        ///     Max retrying to generate unique id
         /// </summary>
         /// <param name="attempts"></param>
         public AutoNumberOptionsBuilder SetMaxWriteAttempts(int attempts = 100)
@@ -80,7 +80,7 @@ namespace AutoNumber.Options
         }
 
         /// <summary>
-        /// BatchSize for id generation, higher the value more losing unused id
+        ///     BatchSize for id generation, higher the value more losing unused id
         /// </summary>
         /// <param name="batchSize"></param>
         public AutoNumberOptionsBuilder SetBatchSize(int batchSize = 100)
