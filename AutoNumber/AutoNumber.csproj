@@ -7,9 +7,9 @@
     <Company></Company>
     <Product>AzureAutoNumber</Product>
     <Description>High performance, distributed unique id generator for Azure environments.</Description>
-    <Version>1.2.1</Version>
-    <AssemblyVersion>1.2.1.0</AssemblyVersion>
-    <FileVersion>1.2.1.0</FileVersion>
+    <Version>1.2.2</Version>
+    <AssemblyVersion>1.2.2.0</AssemblyVersion>
+    <FileVersion>1.2.2.0</FileVersion>
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <Authors>Ali Bahraminezhad</Authors>
     <PackageLicenseExpression>MS-PL</PackageLicenseExpression>
@@ -19,11 +19,7 @@
     <AssemblyName>AutoNumber</AssemblyName>
     <RootNamespace>AutoNumber</RootNamespace>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageReleaseNotes>Bug fixed:
-1. AddAutoNumber extension throws a scoping exception (aspnet core 3.1)
-
-Breacking changes:
-1. The AddAutoNumber is deprecated now, use another overload with options builder instead.</PackageReleaseNotes>
+    <PackageReleaseNotes>Update depencey packages to the latest.</PackageReleaseNotes>
     <PackageId>AzureAutoNumber</PackageId>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
