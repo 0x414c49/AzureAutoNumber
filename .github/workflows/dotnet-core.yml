@@ -33,4 +33,4 @@ jobs:
       run: dotnet pack --configuration Release
     - name: Publish the package to NUGET
       if: ${{ github.ref == 'refs/heads/master' }}    
-      run: dotnet nuget push --source https://api.nuget.org/v3/index.json --api-key $NUGET_API_KEY AutoNumber/bin/Release/*.nupkg
+      run: dotnet nuget push AutoNumber/bin/Release/*.nupkg --source https://api.nuget.org/v3/index.json --api-key $NUGET_API_KEY
