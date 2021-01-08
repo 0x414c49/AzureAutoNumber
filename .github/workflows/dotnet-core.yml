@@ -31,6 +31,6 @@ jobs:
       run: dotnet test --no-restore
     - name: Create the package
       run: dotnet pack --configuration Release
-    - name: Publish the package to GPR
+    - name: Publish the package to NUGET
       if: ${{ github.ref == 'refs/heads/master' }}    
-      run: dotnet nuget push AutoNumber/bin/Release/*.nupkg
+      run: dotnet nuget push AutoNumber/bin/Release/*.nupkg --api-key $NUGET_API_KEY --source https://api.nuget.org/v3/index.json      
