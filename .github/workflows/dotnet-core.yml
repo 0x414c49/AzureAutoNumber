@@ -13,10 +13,14 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Setup .NET Core
+    - name: Setup .NET Core 5
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1.101
+        dotnet-version: 5.0.x
+    - name: Setup .net core 3.0
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.x        
     - name: Install dependencies
       run: dotnet restore
     - name: Build
@@ -24,4 +28,9 @@ jobs:
     - name: Running Azurite
       run: docker run -d -p 10000:10000 -p 10001:10001 mcr.microsoft.com/azure-storage/azurite
     - name: Test
-      run: dotnet test --no-restore 
+      run: dotnet test --no-restore
+    - name: Create the package
+      run: dotnet pack --configuration Release
+    - name: Publish the package to GPR
+      if: ${{ github.ref == 'refs/heads/master' }}    
+      run: dotnet nuget push AutoNumber/bin/Release/*.nupkg
