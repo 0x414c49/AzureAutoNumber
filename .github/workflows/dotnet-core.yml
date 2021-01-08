@@ -32,7 +32,7 @@ jobs:
     - name: Create the package
       run: dotnet pack --configuration Release
     - name: Publish the package to NUGET
-      with: # Set the secret as an input
-        NUGET_API_KEY: ${{ NUGET_API_KEY }}    
+      env: # Set the secret as an input
+        NUGET_API_KEY: ${{ NUGET_API_KEY }}       
       if: ${{ github.ref == 'refs/heads/master' }}    
       run: dotnet nuget push AutoNumber/bin/Release/*.nupkg --source https://api.nuget.org/v3/index.json --api-key $NUGET_API_KEY
