@@ -28,4 +28,5 @@ jobs:
     - name: Create the package
       run: dotnet pack --configuration Release
     - name: Publish the package to GPR
+      if: ${{ github.ref == 'refs/heads/master' }}    
       run: dotnet nuget push AutoNumber/bin/Release/*.nupkg
