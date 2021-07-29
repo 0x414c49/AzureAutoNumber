@@ -7,7 +7,7 @@
     <Company></Company>
     <Product>AzureAutoNumber</Product>
     <Description>High performance, distributed unique id generator for Azure environments.</Description>
-    <Version>1.2.2</Version>
+    <Version>1.2.3</Version>
     <AssemblyVersion>1.3.0.0</AssemblyVersion>
     <FileVersion>1.3.0.0</FileVersion>
     <OutputPath>bin\$(Configuration)\</OutputPath>
@@ -19,9 +19,7 @@
     <AssemblyName>AutoNumber</AssemblyName>
     <RootNamespace>AutoNumber</RootNamespace>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageReleaseNotes>- Stop supporting .NET Core App 3.0, switch to 3.1
-- Library targets .NET 5 now
-- All packages updated to latest</PackageReleaseNotes>
+    <PackageReleaseNotes>Packages updated to the latest and Microsoft.Azure.Storage.Blob replaced with Azure.Storage.Blobs and WindowsAzure.Storage because is deprecated.</PackageReleaseNotes>
     <PackageId>AzureAutoNumber</PackageId>
     <PackageVersion>1.3.0</PackageVersion>
   </PropertyGroup>
