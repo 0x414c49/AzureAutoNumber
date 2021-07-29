@@ -1,4 +1,4 @@
-﻿using Microsoft.Azure.Storage;
+﻿using Microsoft.WindowsAzure.Storage;
 
 namespace AutoNumber.Options
 {

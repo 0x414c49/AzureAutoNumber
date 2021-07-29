@@ -1,6 +1,6 @@
 ﻿using System;
-using Microsoft.Azure.Storage;
 using Microsoft.Extensions.Configuration;
+using Microsoft.WindowsAzure.Storage;
 
 namespace AutoNumber.Options
 {
