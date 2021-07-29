@@ -1,9 +1,9 @@
 ﻿using System;
 using AutoNumber.Interfaces;
 using AutoNumber.Options;
-using Microsoft.Azure.Storage;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.WindowsAzure.Storage;
 
 namespace AutoNumber
 {

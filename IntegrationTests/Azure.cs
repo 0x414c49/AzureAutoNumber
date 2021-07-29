@@ -3,8 +3,8 @@ using System.IO;
 using System.Text;
 using AutoNumber;
 using AutoNumber.Interfaces;
-using Microsoft.Azure.Storage;
-using Microsoft.Azure.Storage.Blob;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Blob;
 using NUnit.Framework;
 
 namespace IntegrationTests.cs

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using AutoNumber.Extensions;
 using AutoNumber.Interfaces;
 using AutoNumber.Options;
-using Microsoft.Azure.Storage;
-using Microsoft.Azure.Storage.Blob;
 using Microsoft.Extensions.Options;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Blob;
 
 namespace AutoNumber
 {
