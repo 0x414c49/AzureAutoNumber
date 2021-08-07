@@ -20,7 +20,7 @@ namespace AutoNumber
 
             services.AddSingleton<IOptimisticDataStore, BlobOptimisticDataStore>(x =>
             {
-                CloudStorageAccount storageAccount = null;
+                CloudStorageAccount storageAccount;
 
                 if (options.CloudStorageAccount != null)
                     storageAccount = options.CloudStorageAccount;
@@ -34,6 +34,8 @@ namespace AutoNumber
 
             services.AddSingleton<IUniqueIdGenerator, UniqueIdGenerator>(x
                 => new UniqueIdGenerator(x.GetService<IOptimisticDataStore>(), options));
+
+            services.AddSingleton(options);
 
             return services;
         }

@@ -19,10 +19,9 @@ namespace IntegrationTests
         private ServiceProvider GenerateServiceProvider()
         {
             var serviceCollection = new ServiceCollection();
+            serviceCollection.AddSingleton<IConfiguration>(configuration);
             serviceCollection.AddAutoNumber(configuration, builder
                 => builder.UseStorageAccount(CloudStorageAccount.DevelopmentStorageAccount)
-                    .SetBatchSize(10)
-                    .SetMaxWriteAttempts(100)
                     .Options);
             return serviceCollection.BuildServiceProvider();
         }
@@ -70,12 +69,12 @@ namespace IntegrationTests
         {
             var serviceProvider = GenerateServiceProvider();
 
-            var options = serviceProvider.GetService<IOptions<AutoNumberOptions>>();
+            var options = serviceProvider.GetService<AutoNumberOptions>();
             
             Assert.NotNull(options);
-            Assert.Equal(25, options.Value.MaxWriteAttempts);
-            Assert.Equal(50, options.Value.BatchSize);
-            Assert.Equal("unique-urls", options.Value.StorageContainerName);
+            Assert.Equal(25, options.MaxWriteAttempts);
+            Assert.Equal(50, options.BatchSize);
+            Assert.Equal("unique-urls", options.StorageContainerName);
         }
 
         [Fact]
