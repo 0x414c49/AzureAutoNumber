@@ -2,14 +2,13 @@
 using AutoNumber.Exceptions;
 using AutoNumber.Interfaces;
 using NSubstitute;
-using NUnit.Framework;
+using Xunit;
 
 namespace AutoNumber.UnitTests
 {
-    [TestFixture]
     public class UniqueIdGeneratorTest
     {
-        [Test]
+        [Fact]
         public void ConstructorShouldNotRetrieveDataFromStore()
         {
             var store = Substitute.For<IOptimisticDataStore>();
@@ -18,34 +17,25 @@ namespace AutoNumber.UnitTests
             store.DidNotReceiveWithAnyArgs().GetData(null);
         }
 
-        [Test]
-        public void MaxWriteAttemptsShouldThrowArgumentOutOfRangeExceptionWhenValueIsNegative()
+        [Xunit.Theory]
+        [InlineData(0)]
+        [InlineData(-1)]
+        public void MaxWriteAttempts_Should_Throw_ArgumentOutOfRangeException_When_Value_Is_Equal_Or_Lower_Than_Zero
+            (int maxWriteAttempts)
         {
             var store = Substitute.For<IOptimisticDataStore>();
-            Assert.That(() =>
-                    // ReSharper disable once ObjectCreationAsStatement
-                    new UniqueIdGenerator(store)
-                    {
-                        MaxWriteAttempts = -1
-                    }
-                , Throws.TypeOf<ArgumentOutOfRangeException>());
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+            {
+                // ReSharper disable once ObjectCreationAsStatement
+                new UniqueIdGenerator(store)
+                {
+                    MaxWriteAttempts = maxWriteAttempts
+                };
+            });
         }
 
-        [Test]
-        public void MaxWriteAttemptsShouldThrowArgumentOutOfRangeExceptionWhenValueIsZero()
-        {
-            var store = Substitute.For<IOptimisticDataStore>();
-            Assert.That(() =>
-                    // ReSharper disable once ObjectCreationAsStatement
-                    new UniqueIdGenerator(store)
-                    {
-                        MaxWriteAttempts = 0
-                    }
-                , Throws.TypeOf<ArgumentOutOfRangeException>());
-        }
-
-        [Test]
-        public void NextIdShouldReturnNumbersSequentially()
+        [Fact]
+        public void NextId_Should_Return_Numbers_Sequentially()
         {
             var store = Substitute.For<IOptimisticDataStore>();
             store.GetData("test").Returns("0", "250");
@@ -56,13 +46,13 @@ namespace AutoNumber.UnitTests
                 BatchSize = 3
             };
 
-            Assert.AreEqual(0, subject.NextId("test"));
-            Assert.AreEqual(1, subject.NextId("test"));
-            Assert.AreEqual(2, subject.NextId("test"));
+            Assert.Equal(0, subject.NextId("test"));
+            Assert.Equal(1, subject.NextId("test"));
+            Assert.Equal(2, subject.NextId("test"));
         }
 
-        [Test]
-        public void NextIdShouldRollOverToNewBlockWhenCurrentBlockIsExhausted()
+        [Fact]
+        public void NextId_Should_RollOver_To_New_Block_When_Current_Block_Is_Exhausted()
         {
             var store = Substitute.For<IOptimisticDataStore>();
             store.GetData("test").Returns("0", "250");
@@ -74,44 +64,42 @@ namespace AutoNumber.UnitTests
                 BatchSize = 3
             };
 
-            Assert.AreEqual(0, subject.NextId("test"));
-            Assert.AreEqual(1, subject.NextId("test"));
-            Assert.AreEqual(2, subject.NextId("test"));
-            Assert.AreEqual(250, subject.NextId("test"));
-            Assert.AreEqual(251, subject.NextId("test"));
-            Assert.AreEqual(252, subject.NextId("test"));
+            Assert.Equal(0, subject.NextId("test"));
+            Assert.Equal(1, subject.NextId("test"));
+            Assert.Equal(2, subject.NextId("test"));
+            Assert.Equal(250, subject.NextId("test"));
+            Assert.Equal(251, subject.NextId("test"));
+            Assert.Equal(252, subject.NextId("test"));
         }
 
-        [Test]
-        public void NextIdShouldThrowExceptionOnCorruptData()
+        [Fact]
+        public void NextId_Should_Throw_Exception_On_CorruptData()
         {
             var store = Substitute.For<IOptimisticDataStore>();
             store.GetData("test").Returns("abc");
 
-            Assert.That(() =>
-                {
-                    var generator = new UniqueIdGenerator(store);
-                    generator.NextId("test");
-                }
-                , Throws.TypeOf<UniqueIdGenerationException>());
+            Assert.Throws<UniqueIdGenerationException>(() =>
+            {
+                var generator = new UniqueIdGenerator(store);
+                generator.NextId("test");
+            });
         }
 
-        [Test]
-        public void NextIdShouldThrowExceptionOnNullData()
+        [Fact]
+        public void NextId_Should_Throw_Exception_On_NullData()
         {
             var store = Substitute.For<IOptimisticDataStore>();
-            store.GetData("test").Returns((string) null);
+            store.GetData("test").Returns((string)null);
 
-            Assert.That(() =>
-                {
-                    var generator = new UniqueIdGenerator(store);
-                    generator.NextId("test");
-                }
-                , Throws.TypeOf<UniqueIdGenerationException>());
+            Assert.Throws<UniqueIdGenerationException>(() =>
+            {
+                var generator = new UniqueIdGenerator(store);
+                generator.NextId("test");
+            });
         }
 
-        [Test]
-        public void NextIdShouldThrowExceptionWhenRetriesAreExhausted()
+        [Fact]
+        public void NextId_Should_Throw_Exception_When_Retries_Are_Exhausted()
         {
             var store = Substitute.For<IOptimisticDataStore>();
             store.GetData("test").Returns("0");
@@ -128,11 +116,11 @@ namespace AutoNumber.UnitTests
             }
             catch (Exception ex)
             {
-                StringAssert.StartsWith("Failed to update the data store after 3 attempts.", ex.Message);
+                Assert.StartsWith("Failed to update the data store after 3 attempts.", ex.Message);
                 return;
             }
-
-            Assert.Fail("NextId should have thrown and been caught in the try block");
+            
+            Assert.True(false, "NextId should have thrown and been caught in the try block");
         }
     }
 }

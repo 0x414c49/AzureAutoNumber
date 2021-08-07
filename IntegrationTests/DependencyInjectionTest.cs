@@ -1,60 +1,62 @@
 ﻿using System.IO;
+using AutoNumber;
 using AutoNumber.Interfaces;
 using AutoNumber.Options;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.WindowsAzure.Storage;
-using NUnit.Framework;
+using Xunit;
 
-namespace AutoNumber.IntegrationTests
+namespace IntegrationTests
 {
-    [TestFixture]
     public class DependencyInjectionTest
     {
-        public IConfigurationRoot Configuration = new ConfigurationBuilder()
+        private readonly IConfigurationRoot configuration = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonFile("appsettings.json", true, true).Build();
 
         private ServiceProvider GenerateServiceProvider()
         {
             var serviceCollection = new ServiceCollection();
-            serviceCollection.AddSingleton(CloudStorageAccount.DevelopmentStorageAccount);
-            serviceCollection.AddSingleton<IConfiguration>(Configuration);
-            serviceCollection.AddAutoNumber();
+            serviceCollection.AddAutoNumber(configuration, builder
+                => builder.UseStorageAccount(CloudStorageAccount.DevelopmentStorageAccount)
+                    .SetBatchSize(10)
+                    .SetMaxWriteAttempts(100)
+                    .Options);
             return serviceCollection.BuildServiceProvider();
         }
 
-        [Test]
-        public void OptionsBuilderShouldGenerateOptions()
+        [Fact]
+        public void OptionsBuilder_Should_Generate_Options()
         {
             var serviceProvider = GenerateServiceProvider();
             var optionsBuilder = new AutoNumberOptionsBuilder(serviceProvider.GetService<IConfiguration>());
 
             optionsBuilder.SetBatchSize(5);
-            Assert.AreEqual(5, optionsBuilder.Options.BatchSize);
+            Assert.Equal(5, optionsBuilder.Options.BatchSize);
 
             optionsBuilder.SetMaxWriteAttempts(10);
-            Assert.AreEqual(10, optionsBuilder.Options.MaxWriteAttempts);
+            Assert.Equal(10, optionsBuilder.Options.MaxWriteAttempts);
 
             optionsBuilder.UseDefaultContainerName();
-            Assert.AreEqual("unique-urls", optionsBuilder.Options.StorageContainerName);
+            Assert.Equal("unique-urls", optionsBuilder.Options.StorageContainerName);
 
             optionsBuilder.UseContainerName("test");
-            Assert.AreEqual("test", optionsBuilder.Options.StorageContainerName);
+            Assert.Equal("test", optionsBuilder.Options.StorageContainerName);
 
             optionsBuilder.UseDefaultStorageAccount();
-            Assert.AreEqual(null, optionsBuilder.Options.StorageAccountConnectionString);
+            Assert.Null(optionsBuilder.Options.StorageAccountConnectionString);
 
             optionsBuilder.UseStorageAccount("test");
-            Assert.AreEqual("test123", optionsBuilder.Options.StorageAccountConnectionString);
+            Assert.Equal("test123", optionsBuilder.Options.StorageAccountConnectionString);
 
             optionsBuilder.UseStorageAccount("test-22");
-            Assert.AreEqual("test-22", optionsBuilder.Options.StorageAccountConnectionString);
+            Assert.Equal("test-22", optionsBuilder.Options.StorageAccountConnectionString);
         }
 
-        [Test]
-        public void ShouldCraeteUniqueIdGenerator()
+        [Fact]
+        public void Should_Create_Unique_IdGenerator()
         {
             var serviceProvider = GenerateServiceProvider();
 
@@ -63,33 +65,31 @@ namespace AutoNumber.IntegrationTests
             Assert.NotNull(uniqueId);
         }
 
-        [Test]
-        public void ShouldOptionsContainsDefaultValues()
+        [Fact]
+        public void Should_Options_Contains_DefaultValues()
         {
             var serviceProvider = GenerateServiceProvider();
 
             var options = serviceProvider.GetService<IOptions<AutoNumberOptions>>();
-
-            Assert.NotNull(options.Value);
-            Assert.AreEqual(25, options.Value.MaxWriteAttempts);
-            Assert.AreEqual(50, options.Value.BatchSize);
-            Assert.AreEqual("unique-urls", options.Value.StorageContainerName);
+            
+            Assert.NotNull(options);
+            Assert.Equal(25, options.Value.MaxWriteAttempts);
+            Assert.Equal(50, options.Value.BatchSize);
+            Assert.Equal("unique-urls", options.Value.StorageContainerName);
         }
 
-        [Test]
-        public void ShouldResolveUniqueIdGenerator()
+        [Fact]
+        public void Should_Resolve_Unique_IdGenerator()
         {
             var serviceCollection = new ServiceCollection();
             serviceCollection.AddSingleton(CloudStorageAccount.DevelopmentStorageAccount);
 
-            serviceCollection.AddAutoNumber(Configuration, x =>
-            {
-                return x.UseContainerName("ali")
+            serviceCollection.AddAutoNumber(configuration, x
+                => x.UseContainerName("ali")
                     .UseDefaultStorageAccount()
                     .SetBatchSize(10)
                     .SetMaxWriteAttempts()
-                    .Options;
-            });
+                    .Options);
 
             var service = serviceCollection.BuildServiceProvider()
                 .GetService<IUniqueIdGenerator>();
