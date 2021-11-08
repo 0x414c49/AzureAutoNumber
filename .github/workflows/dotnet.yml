@@ -1,0 +1,38 @@
+name: .NET
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core 6
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.0.x
+    - name: Setup .net core 3.0
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.x        
+    - name: Install dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+    - name: Running Azurite
+      run: docker run -d -p 10000:10000 -p 10001:10001 mcr.microsoft.com/azure-storage/azurite
+    - name: Test
+      run: dotnet test --no-restore
+    - name: Create the package
+      run: dotnet pack --configuration Release
+    - name: Publish the package to NUGET
+      env: # Set the secret as an input
+        NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}       
+      if: ${{ github.ref == 'refs/heads/main' }}    
+      run: dotnet nuget push AutoNumber/bin/Release/*.nupkg --source https://api.nuget.org/v3/index.json --api-key $NUGET_API_KEY
