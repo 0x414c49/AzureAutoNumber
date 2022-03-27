@@ -12,23 +12,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Display dotnet version
-      run: dotnet --version
-    - name: change directory
-      run: cd DOTNET_ROOT
     - uses: actions/checkout@v2
-    - name: Setup dotnet ${{ matrix.dotnet-version }}
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: '6.x'
-    - name: Display dotnet version
-      run: dotnet --version
-    - name: Check directory
-      run: ls
     - name: Install dependencies
-      run: dotnet restore **/AutoNumber.csproj
+      run: dotnet restore
     - name: Build
-      run: dotnet build **/AutoNumber.csproj --configuration Release --no-restore
+      run: dotnet build --configuration Release --no-restore
     - name: Running Azurite
       run: docker run -d -p 10000:10000 -p 10001:10001 mcr.microsoft.com/azure-storage/azurite
     - name: Test
