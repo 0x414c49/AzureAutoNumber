@@ -14,7 +14,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Install dependencies
-      run: dotnet restore **/AutoNumber.csproj
+      run: dotnet restore **/*.csproj
     - name: Build
       run: dotnet build --configuration Release --no-restore
     - name: Running Azurite
