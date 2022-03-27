@@ -12,6 +12,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Check directory
+      run: ls
     - name: Install dependencies
       run: dotnet restore **/AutoNumber.csproj
     - name: Build
