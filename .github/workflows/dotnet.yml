@@ -13,6 +13,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: Current Directory
+      run: ls
     - name: Install dependencies
       run: dotnet restore **/AutoNumber.csproj
     - name: Build
