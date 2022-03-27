@@ -14,6 +14,8 @@ jobs:
     steps:
     - name: Display dotnet version
       run: dotnet --version
+    - name: change directory
+      run: cd DOTNET_ROOT
     - uses: actions/checkout@v2
     - name: Setup dotnet ${{ matrix.dotnet-version }}
       uses: actions/setup-dotnet@v1
