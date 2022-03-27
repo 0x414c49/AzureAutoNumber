@@ -18,9 +18,9 @@ jobs:
       with:
         dotnet-version: '6.x'
     - name: Install dependencies
-      run: dotnet restore
+      run: dotnet restore **/AutoNumber.csproj
     - name: Build
-      run: dotnet build --configuration Release --no-restore
+      run: dotnet build **/AutoNumber.csproj --configuration Release --no-restore
     - name: Running Azurite
       run: docker run -d -p 10000:10000 -p 10001:10001 mcr.microsoft.com/azure-storage/azurite
     - name: Test
