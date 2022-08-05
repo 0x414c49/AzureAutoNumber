@@ -34,7 +34,13 @@ namespace AutoNumber
 
         public string GetData(string blockName)
         {
-            return GetDataAsync(blockName).GetAwaiter().GetResult();
+            var blobReference = GetBlobReference(blockName);
+
+            using (var stream = new MemoryStream())
+            {
+                blobReference.DownloadTo(stream);
+                return Encoding.UTF8.GetString(stream.ToArray());
+            }
         }
 
         public async Task<string> GetDataAsync(string blockName)
@@ -48,15 +54,41 @@ namespace AutoNumber
             }
         }
 
-        public async Task<bool> Init()
+        public async Task<bool> InitAsync()
         {
             var result = await blobContainer.CreateIfNotExistsAsync().ConfigureAwait(false);
             return result == null || result.Value != null;
         }
 
+        public bool Init()
+        {
+            var result = blobContainer.CreateIfNotExists();
+            return result == null || result.Value != null;
+        }
+
         public bool TryOptimisticWrite(string blockName, string data)
         {
-            return TryOptimisticWriteAsync(blockName, data).GetAwaiter().GetResult();
+            var blobReference = GetBlobReference(blockName);
+            try
+            {
+                var blobRequestCondition = new BlobRequestConditions
+                {
+                    IfMatch = (blobReference.GetProperties()).Value.ETag
+                };
+                UploadText(
+                    blobReference,
+                    data,
+                    blobRequestCondition);
+            }
+            catch (RequestFailedException exc)
+            {
+                if (exc.Status == (int)HttpStatusCode.PreconditionFailed)
+                    return false;
+
+                throw;
+            }
+
+            return true;
         }
 
         public async Task<bool> TryOptimisticWriteAsync(string blockName, string data)
@@ -89,14 +121,14 @@ namespace AutoNumber
             return blobReferences.GetValue(
                 blockName,
                 blobReferencesLock,
-                () => InitializeBlobReferenceAsync(blockName).GetAwaiter().GetResult());
+                () => InitializeBlobReference(blockName));
         }
 
-        private async Task<BlockBlobClient> InitializeBlobReferenceAsync(string blockName)
+        private BlockBlobClient InitializeBlobReference(string blockName)
         {
             var blobReference = blobContainer.GetBlockBlobClient(blockName);
 
-            if (await blobReference.ExistsAsync().ConfigureAwait(false))
+            if (blobReference.Exists())
                 return blobReference;
 
             try
@@ -105,8 +137,7 @@ namespace AutoNumber
                 {
                     IfNoneMatch = ETag.All
                 };
-                await UploadTextAsync(blobReference, SeedValue, blobRequestCondition)
-                    .ConfigureAwait(false);
+                UploadText(blobReference, SeedValue, blobRequestCondition);
             }
             catch (RequestFailedException uploadException)
             {
@@ -130,6 +161,19 @@ namespace AutoNumber
             using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(text)))
             {
                 await blob.UploadAsync(stream, header, null, accessCondition, null, null).ConfigureAwait(false);
+            }
+        }
+
+        private void UploadText(BlockBlobClient blob, string text, BlobRequestConditions accessCondition)
+        {
+            var header = new BlobHttpHeaders
+            {
+                ContentType = "text/plain"
+            };
+
+            using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(text)))
+            {
+                blob.Upload(stream, header, null, accessCondition, null, null);
             }
         }
     }

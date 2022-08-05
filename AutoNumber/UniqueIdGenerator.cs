@@ -101,9 +101,7 @@ namespace AutoNumber
         public UniqueIdGenerator(IOptimisticDataStore optimisticDataStore)
         {
             this.optimisticDataStore = optimisticDataStore;
-            optimisticDataStore.Init()
-                .GetAwaiter()
-                .GetResult();
+            optimisticDataStore.Init();
         }
 
         public UniqueIdGenerator(IOptimisticDataStore optimisticDataStore, IOptions<AutoNumberOptions> options)

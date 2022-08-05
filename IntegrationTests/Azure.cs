@@ -22,7 +22,7 @@ namespace IntegrationTests.cs
         protected override IOptimisticDataStore BuildStore(TestScope scope)
         {
             var blobOptimisticDataStore = new BlobOptimisticDataStore(blobServiceClient, scope.ContainerName);
-            blobOptimisticDataStore.Init().GetAwaiter().GetResult();
+            blobOptimisticDataStore.Init();
             return blobOptimisticDataStore;
         }
     }
