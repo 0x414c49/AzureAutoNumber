@@ -1,6 +1,6 @@
 ﻿using System;
+using Azure.Storage.Blobs;
 using Microsoft.Extensions.Configuration;
-using Microsoft.WindowsAzure.Storage;
 
 namespace AutoNumber.Options
 {
@@ -42,10 +42,10 @@ namespace AutoNumber.Options
             return this;
         }
 
-        public AutoNumberOptionsBuilder UseStorageAccount(CloudStorageAccount storageAccount)
+        public AutoNumberOptionsBuilder UseStorageAccount(BlobServiceClient blobServiceClient)
         {
-            Options.CloudStorageAccount = storageAccount
-                                          ?? throw new ArgumentNullException(nameof(storageAccount));
+            Options.BlobServiceClient = blobServiceClient
+                                        ?? throw new ArgumentNullException(nameof(blobServiceClient));
 
             return this;
         }

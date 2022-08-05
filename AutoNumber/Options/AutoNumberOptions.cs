@@ -1,4 +1,4 @@
-﻿using Microsoft.WindowsAzure.Storage;
+﻿using Azure.Storage.Blobs;
 
 namespace AutoNumber.Options
 {
@@ -8,6 +8,6 @@ namespace AutoNumber.Options
         public int MaxWriteAttempts { get; set; } = 100;
         public string StorageContainerName { get; set; } = "unique-urls";
         public string StorageAccountConnectionString { get; set; }
-        public CloudStorageAccount CloudStorageAccount { get; set; }
+        public BlobServiceClient BlobServiceClient { get; set; }
     }
 }

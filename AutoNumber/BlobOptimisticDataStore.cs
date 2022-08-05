@@ -6,28 +6,29 @@ using System.Threading.Tasks;
 using AutoNumber.Extensions;
 using AutoNumber.Interfaces;
 using AutoNumber.Options;
+using Azure;
+using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
+using Azure.Storage.Blobs.Specialized;
 using Microsoft.Extensions.Options;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Blob;
 
 namespace AutoNumber
 {
     public class BlobOptimisticDataStore : IOptimisticDataStore
     {
         private const string SeedValue = "1";
-        private readonly CloudBlobContainer blobContainer;
-        private readonly ConcurrentDictionary<string, ICloudBlob> blobReferences;
+        private readonly BlobContainerClient blobContainer;
+        private readonly ConcurrentDictionary<string, BlockBlobClient> blobReferences;
         private readonly object blobReferencesLock = new object();
 
-        public BlobOptimisticDataStore(CloudStorageAccount account, string containerName)
+        public BlobOptimisticDataStore(BlobServiceClient blobServiceClient, string containerName)
         {
-            var blobClient = account.CreateCloudBlobClient();
-            blobContainer = blobClient.GetContainerReference(containerName.ToLower());
-            blobReferences = new ConcurrentDictionary<string, ICloudBlob>();
+            blobContainer = blobServiceClient.GetBlobContainerClient(containerName.ToLower());
+            blobReferences = new ConcurrentDictionary<string, BlockBlobClient>();
         }
 
-        public BlobOptimisticDataStore(CloudStorageAccount cloudStorageAccount, IOptions<AutoNumberOptions> options)
-            : this(cloudStorageAccount, options.Value.StorageContainerName)
+        public BlobOptimisticDataStore(BlobServiceClient blobServiceClient, IOptions<AutoNumberOptions> options)
+            : this(blobServiceClient, options.Value.StorageContainerName)
         {
         }
 
@@ -42,14 +43,15 @@ namespace AutoNumber
 
             using (var stream = new MemoryStream())
             {
-                await blobReference.DownloadToStreamAsync(stream).ConfigureAwait(false);
+                await blobReference.DownloadToAsync(stream).ConfigureAwait(false);
                 return Encoding.UTF8.GetString(stream.ToArray());
             }
         }
 
         public async Task<bool> Init()
         {
-            return await blobContainer.CreateIfNotExistsAsync().ConfigureAwait(false);
+            var result = await blobContainer.CreateIfNotExistsAsync().ConfigureAwait(false);
+            return result == null || result.Value != null;
         }
 
         public bool TryOptimisticWrite(string blockName, string data)
@@ -62,14 +64,18 @@ namespace AutoNumber
             var blobReference = GetBlobReference(blockName);
             try
             {
+                var blobRequestCondition = new BlobRequestConditions
+                {
+                    IfMatch = (await blobReference.GetPropertiesAsync()).Value.ETag
+                };
                 await UploadTextAsync(
                     blobReference,
                     data,
-                    AccessCondition.GenerateIfMatchCondition(blobReference.Properties.ETag)).ConfigureAwait(false);
+                    blobRequestCondition).ConfigureAwait(false);
             }
-            catch (StorageException exc)
+            catch (RequestFailedException exc)
             {
-                if (exc.RequestInformation.HttpStatusCode == (int) HttpStatusCode.PreconditionFailed)
+                if (exc.Status == (int)HttpStatusCode.PreconditionFailed)
                     return false;
 
                 throw;
@@ -78,7 +84,7 @@ namespace AutoNumber
             return true;
         }
 
-        private ICloudBlob GetBlobReference(string blockName)
+        private BlockBlobClient GetBlobReference(string blockName)
         {
             return blobReferences.GetValue(
                 blockName,
@@ -86,35 +92,44 @@ namespace AutoNumber
                 () => InitializeBlobReferenceAsync(blockName).GetAwaiter().GetResult());
         }
 
-        private async Task<ICloudBlob> InitializeBlobReferenceAsync(string blockName)
+        private async Task<BlockBlobClient> InitializeBlobReferenceAsync(string blockName)
         {
-            var blobReference = blobContainer.GetBlockBlobReference(blockName);
+            var blobReference = blobContainer.GetBlockBlobClient(blockName);
 
             if (await blobReference.ExistsAsync().ConfigureAwait(false))
                 return blobReference;
 
             try
             {
-                await UploadTextAsync(blobReference, SeedValue, AccessCondition.GenerateIfNoneMatchCondition("*"))
+                var blobRequestCondition = new BlobRequestConditions
+                {
+                    IfNoneMatch = ETag.All
+                };
+                await UploadTextAsync(blobReference, SeedValue, blobRequestCondition)
                     .ConfigureAwait(false);
             }
-            catch (StorageException uploadException)
+            catch (RequestFailedException uploadException)
             {
-                if (uploadException.RequestInformation.HttpStatusCode != (int) HttpStatusCode.Conflict)
+                if (uploadException.Status != (int)HttpStatusCode.Conflict)
                     throw;
             }
 
             return blobReference;
         }
 
-        private async Task UploadTextAsync(ICloudBlob blob, string text, AccessCondition accessCondition)
+        private async Task UploadTextAsync(BlockBlobClient blob, string text, BlobRequestConditions accessCondition)
         {
-            blob.Properties.ContentType = "utf-8";
-            blob.Properties.ContentType = "text/plain";
+            //blob.Properties.ContentType = "utf-8";
+            //blob.Properties.ContentType = "text/plain";
+
+            var header = new BlobHttpHeaders
+            {
+                ContentType = "text/plain"
+            };
 
             using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(text)))
             {
-                await blob.UploadFromStreamAsync(stream, accessCondition, null, null).ConfigureAwait(false);
+                await blob.UploadAsync(stream, header, null, accessCondition, null, null).ConfigureAwait(false);
             }
         }
     }

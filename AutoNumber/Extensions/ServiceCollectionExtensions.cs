@@ -1,9 +1,9 @@
 ﻿using System;
 using AutoNumber.Interfaces;
 using AutoNumber.Options;
+using Azure.Storage.Blobs;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.WindowsAzure.Storage;
 
 namespace AutoNumber
 {
@@ -35,16 +35,16 @@ namespace AutoNumber
 
             services.AddSingleton<IOptimisticDataStore, BlobOptimisticDataStore>(x =>
             {
-                CloudStorageAccount storageAccount = null;
+                BlobServiceClient blobServiceClient = null;
 
-                if (options.CloudStorageAccount != null)
-                    storageAccount = options.CloudStorageAccount;
+                if (options.BlobServiceClient != null)
+                    blobServiceClient = options.BlobServiceClient;
                 else if (options.StorageAccountConnectionString == null)
-                    storageAccount = x.GetService<CloudStorageAccount>();
+                    blobServiceClient = x.GetService<BlobServiceClient>();
                 else
-                    storageAccount = CloudStorageAccount.Parse(options.StorageAccountConnectionString);
+                    blobServiceClient = new BlobServiceClient(options.StorageAccountConnectionString);
 
-                return new BlobOptimisticDataStore(storageAccount, options.StorageContainerName);
+                return new BlobOptimisticDataStore(blobServiceClient, options.StorageContainerName);
             });
 
             services.AddSingleton<IUniqueIdGenerator, UniqueIdGenerator>(x
