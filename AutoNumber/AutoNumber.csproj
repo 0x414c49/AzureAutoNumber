@@ -18,7 +18,11 @@
     <AssemblyName>AutoNumber</AssemblyName>
     <RootNamespace>AutoNumber</RootNamespace>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageReleaseNotes>Upgrade packages and add support for .NET6</PackageReleaseNotes>
+    <PackageReleaseNotes>- Use "Azure.Storage.Blobs" instead of deprecated package of WindowsAzure.Storage
+
+**Breaking changes:**
+Method "UseStorageAccount(CloudStorageAccount storageAccount) removed and a new method 
+UseBlobServiceClient(BlobServiceClient blobServiceClient) added.</PackageReleaseNotes>
     <PackageId>AzureAutoNumber</PackageId>
     <PackageVersion>1.4.0</PackageVersion>
     <SignAssembly>False</SignAssembly>
