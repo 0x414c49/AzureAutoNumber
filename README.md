@@ -16,9 +16,9 @@ The project is rely on Azure Blob Storage. `AutoNumber` package will generate id
 
 
 ```
-var blobStorageAccount = Microsoft.WindowsAzure.Storage.CloudStorageAccount.Parse(connectionString);
+var blobServiceClient = new BlobServiceClient(connectionString);
 
-var blobOptimisticDataStore = new BlobOptimisticDataStore(blobStorageAccount, "unique-ids");
+var blobOptimisticDataStore = new BlobOptimisticDataStore(blobServiceClient, "unique-ids");
 
 var idGen = new UniqueIdGenerator(blobOptimisticDataStore);
 
@@ -29,7 +29,7 @@ var id2 = idGen.NextId("orders");
 ```
 
 ### With Microsoft DI
-The project has an extension method to add it and its dependencies to Microsoft ASP.NET DI. ~~The only caveat is you need to registry type of  `CloudStorageAccount` in DI before registring `AutoNumber`.~~
+The project has an extension method to add it and its dependencies to Microsoft ASP.NET DI. ~~The only caveat is you need to registry type of  `BlobServiceClient` in DI before registring `AutoNumber`.~~
 
 
 Use options builder to configure the service, take into account the default settings will read from `appsettings.json`.
@@ -39,7 +39,7 @@ services.AddAutoNumber(Configuration, x =>
 {
 	return x.UseContainerName("container-name")
 	 .UseStorageAccount("connection-string-or-connection-string-name")
-   //.UseStorageAccount(cloudStorageAccountInstance)
+   //.UseBlobServiceClient(blobServiceClient)
 	 .SetBatchSize(10)
 	 .SetMaxWriteAttempts(100)
 	 .Options;

@@ -150,9 +150,6 @@ namespace AutoNumber
 
         private async Task UploadTextAsync(BlockBlobClient blob, string text, BlobRequestConditions accessCondition)
         {
-            //blob.Properties.ContentType = "utf-8";
-            //blob.Properties.ContentType = "text/plain";
-
             var header = new BlobHttpHeaders
             {
                 ContentType = "text/plain"

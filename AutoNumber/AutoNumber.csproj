@@ -6,9 +6,9 @@
     <AssemblyTitle>SnowMaker</AssemblyTitle>
     <Product>AzureAutoNumber</Product>
     <Description>High performance, distributed unique id generator for Azure environments.</Description>
-    <Version>1.3.3</Version>
-    <AssemblyVersion>1.3.3.0</AssemblyVersion>
-    <FileVersion>1.3.3.0</FileVersion>
+    <Version>1.4.0</Version>
+    <AssemblyVersion>1.4.0.0</AssemblyVersion>
+    <FileVersion>1.4.0.0</FileVersion>
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <Authors>Ali Bahraminezhad</Authors>
     <PackageLicenseExpression>MS-PL</PackageLicenseExpression>
@@ -20,7 +20,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageReleaseNotes>Upgrade packages and add support for .NET6</PackageReleaseNotes>
     <PackageId>AzureAutoNumber</PackageId>
-    <PackageVersion>1.3.3</PackageVersion>
+    <PackageVersion>1.4.0</PackageVersion>
     <SignAssembly>False</SignAssembly>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">

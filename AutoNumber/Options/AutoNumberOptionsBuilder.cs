@@ -42,7 +42,7 @@ namespace AutoNumber.Options
             return this;
         }
 
-        public AutoNumberOptionsBuilder UseStorageAccount(BlobServiceClient blobServiceClient)
+        public AutoNumberOptionsBuilder UseBlobServiceClient(BlobServiceClient blobServiceClient)
         {
             Options.BlobServiceClient = blobServiceClient
                                         ?? throw new ArgumentNullException(nameof(blobServiceClient));
