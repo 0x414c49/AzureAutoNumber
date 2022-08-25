@@ -1,10 +1,10 @@
 ﻿using System.IO;
 using AutoNumber.Interfaces;
 using AutoNumber.Options;
+using Azure.Storage.Blobs;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Microsoft.WindowsAzure.Storage;
 using NUnit.Framework;
 
 namespace AutoNumber.IntegrationTests
@@ -19,7 +19,7 @@ namespace AutoNumber.IntegrationTests
         private ServiceProvider GenerateServiceProvider()
         {
             var serviceCollection = new ServiceCollection();
-            serviceCollection.AddSingleton(CloudStorageAccount.DevelopmentStorageAccount);
+            serviceCollection.AddSingleton(new BlobServiceClient("UseDevelopmentStorage=true"));
             serviceCollection.AddSingleton<IConfiguration>(Configuration);
             serviceCollection.AddAutoNumber();
             return serviceCollection.BuildServiceProvider();
@@ -80,7 +80,7 @@ namespace AutoNumber.IntegrationTests
         public void ShouldResolveUniqueIdGenerator()
         {
             var serviceCollection = new ServiceCollection();
-            serviceCollection.AddSingleton(CloudStorageAccount.DevelopmentStorageAccount);
+            serviceCollection.AddSingleton(new BlobServiceClient("UseDevelopmentStorage=true"));
 
             serviceCollection.AddAutoNumber(Configuration, x =>
             {

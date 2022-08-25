@@ -41,9 +41,14 @@ namespace AutoNumber
             throw new NotImplementedException();
         }
 
-        public Task<bool> Init()
+        public Task<bool> InitAsync()
         {
             return Task.FromResult(true);
+        }
+
+        public bool Init()
+        {
+            return true;
         }
 
         public bool TryOptimisticWrite(string blockName, string data)
