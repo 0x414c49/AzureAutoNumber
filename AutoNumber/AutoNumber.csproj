@@ -18,13 +18,10 @@
     <AssemblyName>AutoNumber</AssemblyName>
     <RootNamespace>AutoNumber</RootNamespace>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageReleaseNotes>- Use "Azure.Storage.Blobs" instead of deprecated package of WindowsAzure.Storage
-
-**Breaking changes:**
-Method "UseStorageAccount(CloudStorageAccount storageAccount) removed and a new method 
-UseBlobServiceClient(BlobServiceClient blobServiceClient) added.</PackageReleaseNotes>
+    <PackageReleaseNotes>* .NET 8
+* All azure and other nuget dependencies upgraded</PackageReleaseNotes>
     <PackageId>AzureAutoNumber</PackageId>
-    <PackageVersion>1.4.0</PackageVersion>
+    <PackageVersion>1.5.0</PackageVersion>
     <SignAssembly>False</SignAssembly>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
