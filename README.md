@@ -1,11 +1,9 @@
 # Azure AutoNumber
 
-** This project is archived. I don't have time to maintain this anymore. ** 
-
 ---
 
 
-![.NET Core](https://github.com/0x414c49/AzureAutoNumber/workflows/.NET%20Core/badge.svg)
+![.NET Build](https://github.com/0x414c49/AzureAutoNumber/actions/workflows/dotnet.yml/badge.svg)
 [![Build Status](https://img.shields.io/github/license/0x414c49/AzureAutoNumber)]()
 [![NuGet version (AzureAutoNumber)](https://img.shields.io/nuget/v/AzureAutoNumber.svg?style=flat-square)](https://www.nuget.org/packages/AzureAutoNumber/)
 
