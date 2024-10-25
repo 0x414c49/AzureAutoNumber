@@ -3,13 +3,13 @@
     <ProductVersion>8.0.30703</ProductVersion>
     <RootNamespace>IntegrationTests.cs</RootNamespace>
     <AssemblyName>IntegrationTests.cs</AssemblyName>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <AssemblyTitle>IntegrationTests.cs</AssemblyTitle>
     <Company>Microsoft</Company>
     <Product>IntegrationTests.cs</Product>
     <Copyright>Copyright © Microsoft 2011</Copyright>
     <OutputPath>bin\$(Configuration)\</OutputPath>
+    <TargetFrameworks>net6.0;net8.0</TargetFrameworks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>full</DebugType>
