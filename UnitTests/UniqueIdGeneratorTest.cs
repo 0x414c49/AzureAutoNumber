@@ -3,6 +3,7 @@ using AutoNumber.Exceptions;
 using AutoNumber.Interfaces;
 using NSubstitute;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace AutoNumber.UnitTests
 {
@@ -56,9 +57,9 @@ namespace AutoNumber.UnitTests
                 BatchSize = 3
             };
 
-            Assert.AreEqual(0, subject.NextId("test"));
-            Assert.AreEqual(1, subject.NextId("test"));
-            Assert.AreEqual(2, subject.NextId("test"));
+            Assert.That(subject.NextId("test"), Is.EqualTo(0));
+            Assert.That(subject.NextId("test"), Is.EqualTo(1));
+            Assert.That(subject.NextId("test"), Is.EqualTo(2));
         }
 
         [Test]
@@ -74,12 +75,12 @@ namespace AutoNumber.UnitTests
                 BatchSize = 3
             };
 
-            Assert.AreEqual(0, subject.NextId("test"));
-            Assert.AreEqual(1, subject.NextId("test"));
-            Assert.AreEqual(2, subject.NextId("test"));
-            Assert.AreEqual(250, subject.NextId("test"));
-            Assert.AreEqual(251, subject.NextId("test"));
-            Assert.AreEqual(252, subject.NextId("test"));
+            Assert.That(subject.NextId("test"), Is.EqualTo(0));
+            Assert.That(subject.NextId("test"), Is.EqualTo(1));
+            Assert.That(subject.NextId("test"), Is.EqualTo(2)  );
+            Assert.That(subject.NextId("test"), Is.EqualTo(250));
+            Assert.That(subject.NextId("test"), Is.EqualTo(251));
+            Assert.That(subject.NextId("test"), Is.EqualTo(252));
         }
 
         [Test]

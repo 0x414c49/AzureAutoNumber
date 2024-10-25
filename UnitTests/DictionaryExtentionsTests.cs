@@ -38,7 +38,7 @@ namespace AutoNumber.UnitTests
                 () =>
                 {
                     // Assert
-                    Assert.IsTrue(IsLockedOnCurrentThread(dictionaryLock));
+                    Assert.That(IsLockedOnCurrentThread(dictionaryLock), Is.True);
                     return "qak";
                 });
         }
@@ -56,7 +56,7 @@ namespace AutoNumber.UnitTests
             var value = dictionary.GetValue("foo", null, null);
 
             // Assert
-            Assert.AreEqual("bar", value);
+            Assert.That("bar", Is.EqualTo(value));
         }
 
         [Test]
