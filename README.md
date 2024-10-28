@@ -3,7 +3,7 @@
 ---
 
 
-![.NET Build](https://github.com/0x414c49/AzureAutoNumber/actions/workflows/dotnet.yml/badge.svg)
+[![.NET Build](https://github.com/0x414c49/AzureAutoNumber/actions/workflows/dotnet.yml/badge.svg)](https://github.com/0x414c49/AzureAutoNumber/actions)
 [![Build Status](https://img.shields.io/github/license/0x414c49/AzureAutoNumber)]()
 [![NuGet version (AzureAutoNumber)](https://img.shields.io/nuget/v/AzureAutoNumber.svg?style=flat-square)](https://www.nuget.org/packages/AzureAutoNumber/)
 
