@@ -5,7 +5,7 @@ using AutoNumber.Interfaces;
 
 namespace AutoNumber
 {
-    public class DebugOnlyFileDataStore : IOptimisticDataStore
+    internal class DebugOnlyFileDataStore : IOptimisticDataStore
     {
         private const string SeedValue = "1";
 
@@ -18,10 +18,16 @@ namespace AutoNumber
 
         public string GetData(string blockName)
         {
+            return GetDataWithConcurrencyCheck(blockName).Value;
+        }
+
+        public DataWrapper GetDataWithConcurrencyCheck(string blockName)
+        {
             var blockPath = Path.Combine(directoryPath, $"{blockName}.txt");
             try
             {
-                return File.ReadAllText(blockPath);
+                var info = new FileInfo(blockPath);
+                return new DataWrapper(File.ReadAllText(blockPath), ETag.ForDate(info.LastWriteTimeUtc));
             }
             catch (FileNotFoundException)
             {
@@ -32,11 +38,18 @@ namespace AutoNumber
                     streamWriter.Write(SeedValue);
                 }
 
-                return SeedValue;
+                var info = new FileInfo(blockPath);
+
+                return new DataWrapper(SeedValue, ETag.ForDate(info.LastWriteTimeUtc));
             }
         }
 
         public Task<string> GetDataAsync(string blockName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<DataWrapper> GetDataWithConcurrencyCheckAsync(string blockName)
         {
             throw new NotImplementedException();
         }
@@ -53,12 +66,33 @@ namespace AutoNumber
 
         public bool TryOptimisticWrite(string blockName, string data)
         {
+            return TryOptimisticWriteWithConcurrencyCheck(blockName, data, Azure.ETag.All);
+        }
+
+        public bool TryOptimisticWriteWithConcurrencyCheck(string blockName, string data, Azure.ETag eTag)
+        {
             var blockPath = Path.Combine(directoryPath, $"{blockName}.txt");
+
+            if(!File.Exists(blockPath)) return false;
+
+            if (!eTag.Equals(Azure.ETag.All))
+            {
+                var info = new FileInfo(blockPath);
+                var eTagToCompare = ETag.ForDate(info.LastWriteTimeUtc);
+
+                if (!eTagToCompare.Equals(eTag)) return false;
+            }
+
             File.WriteAllText(blockPath, data);
             return true;
         }
 
         public Task<bool> TryOptimisticWriteAsync(string blockName, string data)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> TryOptimisticWriteWithConcurrencyCheckAsync(string blockName, string data, Azure.ETag eTag)
         {
             throw new NotImplementedException();
         }

@@ -13,7 +13,7 @@ namespace AutoNumber
     /// <summary>
     ///     Generate a new incremental id regards the scope name
     /// </summary>
-    public class UniqueIdGenerator : IUniqueIdGenerator
+    internal class UniqueIdGenerator : IUniqueIdGenerator
     {
         /// <summary>
         ///     Generate a new incremental id regards the scope name
@@ -47,9 +47,9 @@ namespace AutoNumber
 
             while (writesAttempted < MaxWriteAttempts)
             {
-                var data = optimisticDataStore.GetData(scopeName);
+                var data = optimisticDataStore.GetDataWithConcurrencyCheck(scopeName);
 
-                if (!long.TryParse(data, out var nextId))
+                if (!long.TryParse(data.Value, out var nextId))
                     throw new UniqueIdGenerationException(
                         $"The id seed returned from storage for scope '{scopeName}' was corrupt, and could not be parsed as a long. The data returned was: {data}");
 
@@ -57,8 +57,8 @@ namespace AutoNumber
                 state.HighestIdAvailableInBatch = nextId - 1 + BatchSize;
                 var firstIdInNextBatch = state.HighestIdAvailableInBatch + 1;
 
-                if (optimisticDataStore.TryOptimisticWrite(scopeName,
-                    firstIdInNextBatch.ToString(CultureInfo.InvariantCulture)))
+                if (optimisticDataStore.TryOptimisticWriteWithConcurrencyCheck(scopeName,
+                    firstIdInNextBatch.ToString(CultureInfo.InvariantCulture), data.ETag))
                     return;
 
                 writesAttempted++;

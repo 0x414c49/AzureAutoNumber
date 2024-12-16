@@ -1,6 +1,6 @@
 using System;
 
-namespace IntegrationTests.cs
+namespace AutoNumber.IntegrationTests
 {
     public interface ITestScope : IDisposable
     {

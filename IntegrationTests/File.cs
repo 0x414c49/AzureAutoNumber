@@ -4,17 +4,17 @@ using AutoNumber;
 using AutoNumber.Interfaces;
 using NUnit.Framework;
 
-namespace IntegrationTests.cs
+namespace AutoNumber.IntegrationTests
 {
     [TestFixture]
     public class File : Scenarios<File.TestScope>
     {
-        protected override TestScope BuildTestScope()
+        internal override TestScope BuildTestScope()
         {
             return new TestScope();
         }
 
-        protected override IOptimisticDataStore BuildStore(TestScope scope)
+        internal override IOptimisticDataStore BuildStore(TestScope scope)
         {
             return new DebugOnlyFileDataStore(scope.DirectoryPath);
         }
