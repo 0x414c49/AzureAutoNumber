@@ -49,7 +49,7 @@ namespace AutoNumber
             {
                 var data = optimisticDataStore.GetData(scopeName);
 
-                if (!long.TryParse(data, out var nextId))
+                if (!long.TryParse(data.Value, out var nextId))
                     throw new UniqueIdGenerationException(
                         $"The id seed returned from storage for scope '{scopeName}' was corrupt, and could not be parsed as a long. The data returned was: {data}");
 
@@ -58,7 +58,7 @@ namespace AutoNumber
                 var firstIdInNextBatch = state.HighestIdAvailableInBatch + 1;
 
                 if (optimisticDataStore.TryOptimisticWrite(scopeName,
-                    firstIdInNextBatch.ToString(CultureInfo.InvariantCulture)))
+                    firstIdInNextBatch.ToString(CultureInfo.InvariantCulture), data.ETag))
                     return;
 
                 writesAttempted++;

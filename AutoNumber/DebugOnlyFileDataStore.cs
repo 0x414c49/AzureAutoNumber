@@ -1,7 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using AutoNumber.Interfaces;
+using Azure;
 
 namespace AutoNumber
 {
@@ -16,12 +18,13 @@ namespace AutoNumber
             this.directoryPath = directoryPath;
         }
 
-        public string GetData(string blockName)
+        public DataWrapper GetData(string blockName)
         {
             var blockPath = Path.Combine(directoryPath, $"{blockName}.txt");
             try
             {
-                return File.ReadAllText(blockPath);
+                var info = new FileInfo(blockPath);
+                return new DataWrapper(File.ReadAllText(blockPath), ETag.ForDate(info.LastWriteTimeUtc));
             }
             catch (FileNotFoundException)
             {
@@ -32,11 +35,13 @@ namespace AutoNumber
                     streamWriter.Write(SeedValue);
                 }
 
-                return SeedValue;
+                var info = new FileInfo(blockPath);
+
+                return new DataWrapper(SeedValue, ETag.ForDate(info.LastWriteTimeUtc));
             }
         }
 
-        public Task<string> GetDataAsync(string blockName)
+        public Task<DataWrapper> GetDataAsync(string blockName)
         {
             throw new NotImplementedException();
         }
@@ -51,14 +56,14 @@ namespace AutoNumber
             return true;
         }
 
-        public bool TryOptimisticWrite(string blockName, string data)
+        public bool TryOptimisticWrite(string blockName, string data, Azure.ETag eTag)
         {
             var blockPath = Path.Combine(directoryPath, $"{blockName}.txt");
             File.WriteAllText(blockPath, data);
             return true;
         }
 
-        public Task<bool> TryOptimisticWriteAsync(string blockName, string data)
+        public Task<bool> TryOptimisticWriteAsync(string blockName, string data, Azure.ETag eTag)
         {
             throw new NotImplementedException();
         }

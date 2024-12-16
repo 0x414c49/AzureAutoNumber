@@ -32,25 +32,27 @@ namespace AutoNumber
         {
         }
 
-        public string GetData(string blockName)
+        public DataWrapper GetData(string blockName)
         {
             var blobReference = GetBlobReference(blockName);
 
             using (var stream = new MemoryStream())
             {
                 blobReference.DownloadTo(stream);
-                return Encoding.UTF8.GetString(stream.ToArray());
+                return new DataWrapper(Encoding.UTF8.GetString(stream.ToArray()),
+                    blobReference.GetProperties().Value.ETag);
             }
         }
 
-        public async Task<string> GetDataAsync(string blockName)
+        public async Task<DataWrapper> GetDataAsync(string blockName)
         {
             var blobReference = GetBlobReference(blockName);
 
             using (var stream = new MemoryStream())
             {
                 await blobReference.DownloadToAsync(stream).ConfigureAwait(false);
-                return Encoding.UTF8.GetString(stream.ToArray());
+                 var properties  = await blobReference.GetPropertiesAsync();
+                 return new DataWrapper(Encoding.UTF8.GetString(stream.ToArray()), properties.Value.ETag);
             }
         }
 
@@ -66,14 +68,14 @@ namespace AutoNumber
             return result == null || result.Value != null;
         }
 
-        public bool TryOptimisticWrite(string blockName, string data)
+        public bool TryOptimisticWrite(string blockName, string data, Azure.ETag eTag)
         {
             var blobReference = GetBlobReference(blockName);
             try
             {
                 var blobRequestCondition = new BlobRequestConditions
                 {
-                    IfMatch = (blobReference.GetProperties()).Value.ETag
+                    IfMatch = eTag
                 };
                 UploadText(
                     blobReference,
@@ -91,14 +93,14 @@ namespace AutoNumber
             return true;
         }
 
-        public async Task<bool> TryOptimisticWriteAsync(string blockName, string data)
+        public async Task<bool> TryOptimisticWriteAsync(string blockName, string data, Azure.ETag eTag)
         {
             var blobReference = GetBlobReference(blockName);
             try
             {
                 var blobRequestCondition = new BlobRequestConditions
                 {
-                    IfMatch = (await blobReference.GetPropertiesAsync()).Value.ETag
+                    IfMatch = eTag
                 };
                 await UploadTextAsync(
                     blobReference,
@@ -135,7 +137,7 @@ namespace AutoNumber
             {
                 var blobRequestCondition = new BlobRequestConditions
                 {
-                    IfNoneMatch = ETag.All
+                    IfNoneMatch = Azure.ETag.All
                 };
                 UploadText(blobReference, SeedValue, blobRequestCondition);
             }
