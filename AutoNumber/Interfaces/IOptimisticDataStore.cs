@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Diagnostics.Tracing;
+using System.Threading.Tasks;
 using Azure;
 
 namespace AutoNumber.Interfaces
@@ -7,8 +8,8 @@ namespace AutoNumber.Interfaces
     {
         DataWrapper GetData(string blockName);
         Task<DataWrapper> GetDataAsync(string blockName);
-        bool TryOptimisticWrite(string blockName, string data, Azure.ETag eTag);
-        Task<bool> TryOptimisticWriteAsync(string blockName, string data, Azure.ETag eTag);
+        bool TryOptimisticWrite(string blockName, string data, Azure.ETag? eTag);
+        Task<bool> TryOptimisticWriteAsync(string blockName, string data, Azure.ETag? eTag);
         Task<bool> InitAsync();
         bool Init();
     }

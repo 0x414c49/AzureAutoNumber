@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using AutoNumber.Interfaces;
@@ -56,14 +57,25 @@ namespace AutoNumber
             return true;
         }
 
-        public bool TryOptimisticWrite(string blockName, string data, Azure.ETag eTag)
+        public bool TryOptimisticWrite(string blockName, string data, Azure.ETag? eTag)
         {
             var blockPath = Path.Combine(directoryPath, $"{blockName}.txt");
+
+            if (eTag.HasValue)
+            {
+                if(!File.Exists(blockPath)) return false;
+
+                var info = new FileInfo(blockPath);
+                var eTagToCompare = ETag.ForDate(info.LastWriteTimeUtc);
+
+                if (!eTagToCompare.Equals(eTag.Value)) return false;
+            }
+
             File.WriteAllText(blockPath, data);
             return true;
         }
 
-        public Task<bool> TryOptimisticWriteAsync(string blockName, string data, Azure.ETag eTag)
+        public Task<bool> TryOptimisticWriteAsync(string blockName, string data, Azure.ETag? eTag)
         {
             throw new NotImplementedException();
         }
