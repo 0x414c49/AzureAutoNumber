@@ -7,19 +7,19 @@ using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Specialized;
 using NUnit.Framework;
 
-namespace IntegrationTests.cs
+namespace AutoNumber.IntegrationTests
 {
     [TestFixture]
     public class Azure : Scenarios<TestScope>
     {
         private readonly BlobServiceClient blobServiceClient = new BlobServiceClient("UseDevelopmentStorage=true");
 
-        protected override TestScope BuildTestScope()
+        internal override TestScope BuildTestScope()
         {
             return new TestScope(new BlobServiceClient("UseDevelopmentStorage=true"));
         }
 
-        protected override IOptimisticDataStore BuildStore(TestScope scope)
+        internal override IOptimisticDataStore BuildStore(TestScope scope)
         {
             var blobOptimisticDataStore = new BlobOptimisticDataStore(blobServiceClient, scope.ContainerName);
             blobOptimisticDataStore.Init();

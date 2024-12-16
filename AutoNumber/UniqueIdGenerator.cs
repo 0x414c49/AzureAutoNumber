@@ -13,7 +13,7 @@ namespace AutoNumber
     /// <summary>
     ///     Generate a new incremental id regards the scope name
     /// </summary>
-    public class UniqueIdGenerator : IUniqueIdGenerator
+    internal class UniqueIdGenerator : IUniqueIdGenerator
     {
         /// <summary>
         ///     Generate a new incremental id regards the scope name
@@ -47,7 +47,7 @@ namespace AutoNumber
 
             while (writesAttempted < MaxWriteAttempts)
             {
-                var data = optimisticDataStore.GetData(scopeName);
+                var data = optimisticDataStore.GetDataWithConcurrencyCheck(scopeName);
 
                 if (!long.TryParse(data.Value, out var nextId))
                     throw new UniqueIdGenerationException(
@@ -57,7 +57,7 @@ namespace AutoNumber
                 state.HighestIdAvailableInBatch = nextId - 1 + BatchSize;
                 var firstIdInNextBatch = state.HighestIdAvailableInBatch + 1;
 
-                if (optimisticDataStore.TryOptimisticWrite(scopeName,
+                if (optimisticDataStore.TryOptimisticWriteWithConcurrencyCheck(scopeName,
                     firstIdInNextBatch.ToString(CultureInfo.InvariantCulture), data.ETag))
                     return;
 

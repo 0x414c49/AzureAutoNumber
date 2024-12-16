@@ -6,12 +6,12 @@ using AutoNumber;
 using AutoNumber.Interfaces;
 using NUnit.Framework;
 
-namespace IntegrationTests.cs
+namespace AutoNumber.IntegrationTests
 {
     public abstract class Scenarios<TTestScope> where TTestScope : ITestScope
     {
-        protected abstract IOptimisticDataStore BuildStore(TTestScope scope);
-        protected abstract TTestScope BuildTestScope();
+        internal abstract IOptimisticDataStore BuildStore(TTestScope scope);
+        internal abstract TTestScope BuildTestScope();
 
         [Test]
         public void ShouldReturnOneForFirstIdInNewScope()

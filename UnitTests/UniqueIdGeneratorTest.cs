@@ -51,11 +51,11 @@ namespace AutoNumber.UnitTests
         {
             var eTagDate = new DateTime(2000, 1, 2, 3, 4, 5, 6, DateTimeKind.Utc);
             var store = Substitute.For<IOptimisticDataStore>();
-            store.GetData("test")
+            store.GetDataWithConcurrencyCheck("test")
                 .Returns(
                     new DataWrapper("0", ETag.ForDate(eTagDate)),
                     new DataWrapper("250", ETag.ForDate(eTagDate.AddMonths(1))));
-            store.TryOptimisticWrite("test", "3", ETag.ForDate(eTagDate))
+            store.TryOptimisticWriteWithConcurrencyCheck("test", "3", ETag.ForDate(eTagDate))
                 .Returns(true);
 
             var subject = new UniqueIdGenerator(store)
@@ -74,11 +74,11 @@ namespace AutoNumber.UnitTests
             var eTagDate = new DateTime(2000, 1, 2, 3, 4, 5, 6, DateTimeKind.Utc);
             var eTagDate2 = eTagDate.AddMonths(1);
             var store = Substitute.For<IOptimisticDataStore>();
-            store.GetData("test").Returns(
+            store.GetDataWithConcurrencyCheck("test").Returns(
                 new DataWrapper("0", ETag.ForDate(eTagDate)),
                 new DataWrapper("250", ETag.ForDate(eTagDate2)));
-            store.TryOptimisticWrite("test", "3", ETag.ForDate(eTagDate)).Returns(true);
-            store.TryOptimisticWrite("test", "253", ETag.ForDate(eTagDate2)).Returns(true);
+            store.TryOptimisticWriteWithConcurrencyCheck("test", "3", ETag.ForDate(eTagDate)).Returns(true);
+            store.TryOptimisticWriteWithConcurrencyCheck("test", "253", ETag.ForDate(eTagDate2)).Returns(true);
 
             var subject = new UniqueIdGenerator(store)
             {
@@ -97,7 +97,7 @@ namespace AutoNumber.UnitTests
         public void NextIdShouldThrowExceptionOnCorruptData()
         {
             var store = Substitute.For<IOptimisticDataStore>();
-            store.GetData("test").Returns(new DataWrapper("abc", Azure.ETag.All));
+            store.GetDataWithConcurrencyCheck("test").Returns(new DataWrapper("abc", Azure.ETag.All));
 
             Assert.That(() =>
                 {
@@ -111,7 +111,7 @@ namespace AutoNumber.UnitTests
         public void NextIdShouldThrowExceptionOnNullData()
         {
             var store = Substitute.For<IOptimisticDataStore>();
-            store.GetData("test").Returns(new DataWrapper((string)null, Azure.ETag.All));
+            store.GetDataWithConcurrencyCheck("test").Returns(new DataWrapper((string)null, Azure.ETag.All));
 
             Assert.That(() =>
                 {
@@ -126,8 +126,8 @@ namespace AutoNumber.UnitTests
         {
             var eTagDate = new DateTime(2000, 1, 2, 3, 4, 5, 6, DateTimeKind.Utc);
             var store = Substitute.For<IOptimisticDataStore>();
-            store.GetData("test").Returns(new DataWrapper("0", ETag.ForDate(eTagDate)));
-            store.TryOptimisticWrite("test", "3", ETag.ForDate(eTagDate.AddMonths(1)))
+            store.GetDataWithConcurrencyCheck("test").Returns(new DataWrapper("0", ETag.ForDate(eTagDate)));
+            store.TryOptimisticWriteWithConcurrencyCheck("test", "3", ETag.ForDate(eTagDate.AddMonths(1)))
                 .Returns(false, false, false, true);
 
             var generator = new UniqueIdGenerator(store)

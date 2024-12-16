@@ -14,7 +14,7 @@ using Microsoft.Extensions.Options;
 
 namespace AutoNumber
 {
-    public class BlobOptimisticDataStore : IOptimisticDataStore
+    internal class BlobOptimisticDataStore : IOptimisticDataStore
     {
         private const string SeedValue = "1";
         private readonly BlobContainerClient blobContainer;
@@ -32,7 +32,12 @@ namespace AutoNumber
         {
         }
 
-        public DataWrapper GetData(string blockName)
+        public string GetData(string blockName)
+        {
+            return GetDataWithConcurrencyCheck(blockName).Value;
+        }
+
+        public DataWrapper GetDataWithConcurrencyCheck(string blockName)
         {
             var blobReference = GetBlobReference(blockName);
 
@@ -44,7 +49,14 @@ namespace AutoNumber
             }
         }
 
-        public async Task<DataWrapper> GetDataAsync(string blockName)
+        public async Task<string> GetDataAsync(string blockName)
+        {
+            var result = await GetDataWithConcurrencyCheckAsync(blockName);
+
+            return result.Value;
+        }
+
+        public async Task<DataWrapper> GetDataWithConcurrencyCheckAsync(string blockName)
         {
             var blobReference = GetBlobReference(blockName);
 
@@ -68,14 +80,19 @@ namespace AutoNumber
             return result == null || result.Value != null;
         }
 
-        public bool TryOptimisticWrite(string blockName, string data, Azure.ETag? eTag)
+        public bool TryOptimisticWrite(string blockName, string data)
+        {
+            return TryOptimisticWriteWithConcurrencyCheck(blockName, data, Azure.ETag.All);
+        }
+
+        public bool TryOptimisticWriteWithConcurrencyCheck(string blockName, string data, Azure.ETag eTag)
         {
             var blobReference = GetBlobReference(blockName);
             try
             {
                 var blobRequestCondition = new BlobRequestConditions
                 {
-                    IfMatch = eTag ?? (blobReference.GetProperties()).Value.ETag
+                    IfMatch = eTag
                 };
                 UploadText(
                     blobReference,
@@ -93,14 +110,19 @@ namespace AutoNumber
             return true;
         }
 
-        public async Task<bool> TryOptimisticWriteAsync(string blockName, string data, Azure.ETag? eTag)
+        public async Task<bool> TryOptimisticWriteAsync(string blockName, string data)
+        {
+            return await TryOptimisticWriteWithConcurrencyCheckAsync(blockName, data, Azure.ETag.All);
+        }
+
+        public async Task<bool> TryOptimisticWriteWithConcurrencyCheckAsync(string blockName, string data, Azure.ETag eTag)
         {
             var blobReference = GetBlobReference(blockName);
             try
             {
                 var blobRequestCondition = new BlobRequestConditions
                 {
-                    IfMatch = eTag ?? (await blobReference.GetPropertiesAsync()).Value.ETag
+                    IfMatch = eTag
                 };
                 await UploadTextAsync(
                     blobReference,
