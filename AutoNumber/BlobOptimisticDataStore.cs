@@ -19,7 +19,7 @@ namespace AutoNumber
         private const string SeedValue = "1";
         private readonly BlobContainerClient blobContainer;
         private readonly ConcurrentDictionary<string, BlockBlobClient> blobReferences;
-        private readonly object blobReferencesLock = new object();
+        private readonly object blobReferencesLock = new();
 
         public BlobOptimisticDataStore(BlobServiceClient blobServiceClient, string containerName)
         {
@@ -36,22 +36,18 @@ namespace AutoNumber
         {
             var blobReference = GetBlobReference(blockName);
 
-            using (var stream = new MemoryStream())
-            {
-                blobReference.DownloadTo(stream);
-                return Encoding.UTF8.GetString(stream.ToArray());
-            }
+            using var stream = new MemoryStream();
+            blobReference.DownloadTo(stream);
+            return Encoding.UTF8.GetString(stream.ToArray());
         }
 
         public async Task<string> GetDataAsync(string blockName)
         {
             var blobReference = GetBlobReference(blockName);
 
-            using (var stream = new MemoryStream())
-            {
-                await blobReference.DownloadToAsync(stream).ConfigureAwait(false);
-                return Encoding.UTF8.GetString(stream.ToArray());
-            }
+            using var stream = new MemoryStream();
+            await blobReference.DownloadToAsync(stream).ConfigureAwait(false);
+            return Encoding.UTF8.GetString(stream.ToArray());
         }
 
         public async Task<bool> InitAsync()
@@ -73,7 +69,7 @@ namespace AutoNumber
             {
                 var blobRequestCondition = new BlobRequestConditions
                 {
-                    IfMatch = (blobReference.GetProperties()).Value.ETag
+                    IfMatch = blobReference.GetProperties().Value.ETag
                 };
                 UploadText(
                     blobReference,
@@ -155,10 +151,8 @@ namespace AutoNumber
                 ContentType = "text/plain"
             };
 
-            using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(text)))
-            {
-                await blob.UploadAsync(stream, header, null, accessCondition, null, null).ConfigureAwait(false);
-            }
+            using var stream = new MemoryStream(Encoding.UTF8.GetBytes(text));
+            await blob.UploadAsync(stream, header, null, accessCondition).ConfigureAwait(false);
         }
 
         private void UploadText(BlockBlobClient blob, string text, BlobRequestConditions accessCondition)
@@ -168,10 +162,8 @@ namespace AutoNumber
                 ContentType = "text/plain"
             };
 
-            using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(text)))
-            {
-                blob.Upload(stream, header, null, accessCondition, null, null);
-            }
+            using var stream = new MemoryStream(Encoding.UTF8.GetBytes(text));
+            blob.Upload(stream, header, null, accessCondition);
         }
     }
 }

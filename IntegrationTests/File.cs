@@ -4,47 +4,46 @@ using AutoNumber;
 using AutoNumber.Interfaces;
 using NUnit.Framework;
 
-namespace IntegrationTests.cs
+namespace IntegrationTests.cs;
+
+[TestFixture]
+public class File : Scenarios<File.TestScope>
 {
-    [TestFixture]
-    public class File : Scenarios<File.TestScope>
+    protected override TestScope BuildTestScope()
     {
-        protected override TestScope BuildTestScope()
+        return new TestScope();
+    }
+
+    protected override IOptimisticDataStore BuildStore(TestScope scope)
+    {
+        return new DebugOnlyFileDataStore(scope.DirectoryPath);
+    }
+
+    public class TestScope : ITestScope
+    {
+        public TestScope()
         {
-            return new TestScope();
+            var ticks = DateTime.UtcNow.Ticks;
+            IdScopeName = string.Format("AutoNumbertest{0}", ticks);
+
+            DirectoryPath = Path.Combine(Path.GetTempPath(), IdScopeName);
+            Directory.CreateDirectory(DirectoryPath);
         }
 
-        protected override IOptimisticDataStore BuildStore(TestScope scope)
+        public string DirectoryPath { get; }
+
+        public string IdScopeName { get; }
+
+        public string ReadCurrentPersistedValue()
         {
-            return new DebugOnlyFileDataStore(scope.DirectoryPath);
+            var filePath = Path.Combine(DirectoryPath, string.Format("{0}.txt", IdScopeName));
+            return System.IO.File.ReadAllText(filePath);
         }
 
-        public class TestScope : ITestScope
+        public void Dispose()
         {
-            public TestScope()
-            {
-                var ticks = DateTime.UtcNow.Ticks;
-                IdScopeName = string.Format("AutoNumbertest{0}", ticks);
-
-                DirectoryPath = Path.Combine(Path.GetTempPath(), IdScopeName);
-                Directory.CreateDirectory(DirectoryPath);
-            }
-
-            public string DirectoryPath { get; }
-
-            public string IdScopeName { get; }
-
-            public string ReadCurrentPersistedValue()
-            {
-                var filePath = Path.Combine(DirectoryPath, string.Format("{0}.txt", IdScopeName));
-                return System.IO.File.ReadAllText(filePath);
-            }
-
-            public void Dispose()
-            {
-                if (Directory.Exists(DirectoryPath))
-                    Directory.Delete(DirectoryPath, true);
-            }
+            if (Directory.Exists(DirectoryPath))
+                Directory.Delete(DirectoryPath, true);
         }
     }
 }

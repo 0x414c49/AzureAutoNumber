@@ -1,41 +1,43 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFrameworks>net6.0;net8.0;netstandard2.0;netstandard2.1</TargetFrameworks>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
-    <AssemblyTitle>SnowMaker</AssemblyTitle>
-    <Product>AzureAutoNumber</Product>
-    <Description>High performance, distributed unique id generator for Azure environments.</Description>
-    <Version>1.4.0</Version>
-    <AssemblyVersion>1.5.0.0</AssemblyVersion>
-    <FileVersion>1.5.0.0</FileVersion>
-    <OutputPath>bin\$(Configuration)\</OutputPath>
-    <Authors>Ali Bahraminezhad</Authors>
-    <PackageLicenseExpression>MS-PL</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/0x414c49/AzureAutoNumber</PackageProjectUrl>
-    <PackageTags>Azure</PackageTags>
-    <Title>AutoNumber</Title>
-    <AssemblyName>AutoNumber</AssemblyName>
-    <RootNamespace>AutoNumber</RootNamespace>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageReleaseNotes>* .NET 8
-* All azure and other nuget dependencies upgraded</PackageReleaseNotes>
-    <PackageId>AzureAutoNumber</PackageId>
-    <PackageVersion>1.5.0</PackageVersion>
-    <SignAssembly>False</SignAssembly>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugType>full</DebugType>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="Azure.Storage.Blobs" Version="12.13.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
-    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
-  </ItemGroup>
+    <PropertyGroup>
+        <TargetFrameworks>net6.0;net8.0;net9.0;netstandard2.0;netstandard2.1</TargetFrameworks>
+        <ProductVersion>8.0.30703</ProductVersion>
+        <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+        <AssemblyTitle>SnowMaker</AssemblyTitle>
+        <Product>AzureAutoNumber</Product>
+        <Description>High performance, distributed unique id generator for Azure environments.</Description>
+        <Version>1.5.2</Version>
+        <AssemblyVersion>1.5.2.0</AssemblyVersion>
+        <LangVersion>9.0</LangVersion>
+        <FileVersion>1.5.2.0</FileVersion>
+        <OutputPath>bin\$(Configuration)\</OutputPath>
+        <Authors>Ali Bahraminezhad</Authors>
+        <PackageLicenseExpression>MS-PL</PackageLicenseExpression>
+        <PackageProjectUrl>https://github.com/0x414c49/AzureAutoNumber</PackageProjectUrl>
+        <PackageTags>Azure</PackageTags>
+        <Title>AutoNumber</Title>
+        <AssemblyName>AutoNumber</AssemblyName>
+        <RootNamespace>AutoNumber</RootNamespace>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageReleaseNotes>* .NET 8
+            * All azure and other nuget dependencies upgraded
+        </PackageReleaseNotes>
+        <PackageId>AzureAutoNumber</PackageId>
+        <PackageVersion>1.5.0</PackageVersion>
+        <SignAssembly>False</SignAssembly>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+        <DebugType>full</DebugType>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+        <DebugType>pdbonly</DebugType>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="Azure.Storage.Blobs" Version="12.25.0"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.7"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.7"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.7"/>
+        <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.7"/>
+        <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.6.3"/>
+    </ItemGroup>
 </Project>

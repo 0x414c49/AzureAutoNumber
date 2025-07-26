@@ -15,8 +15,8 @@ High performance, distributed unique thread-safe id generator for Azure.
 
 ## How to use
 
-The project is rely on Azure Blob Storage. `AutoNumber` package will generate ids by using a single text file on the Azure Blob Storage.
-
+The project is rely on Azure Blob Storage. `AutoNumber` package will generate ids by using a single text file on the
+Azure Blob Storage.
 
 ```
 var blobServiceClient = new BlobServiceClient(connectionString);
@@ -32,8 +32,9 @@ var id2 = idGen.NextId("orders");
 ```
 
 ### With Microsoft DI
-The project has an extension method to add it and its dependencies to Microsoft ASP.NET DI. ~~The only caveat is you need to registry type of  `BlobServiceClient` in DI before registring `AutoNumber`.~~
 
+The project has an extension method to add it and its dependencies to Microsoft ASP.NET DI. ~~The only caveat is you
+need to registry type of  `BlobServiceClient` in DI before registring `AutoNumber`.~~
 
 Use options builder to configure the service, take into account the default settings will read from `appsettings.json`.
 
@@ -49,9 +50,7 @@ services.AddAutoNumber(Configuration, x =>
 });
 ```
 
-
 #### Deprecated way to register the service:
-
 
 ```
 // configure the services
@@ -72,7 +71,9 @@ public class Foo
 ```
 
 ### Configuration
-These are default configuration for `AutoNumber`. If you prefer registering AutoNumber with `AddAddNumber` method, these options can be set via `appsettings.json`.
+
+These are default configuration for `AutoNumber`. If you prefer registering AutoNumber with `AddAddNumber` method, these
+options can be set via `appsettings.json`.
 
 ```
 {
@@ -83,9 +84,14 @@ These are default configuration for `AutoNumber`. If you prefer registering Auto
   }
 }
 ```
+
 ### Support
+
 Support this proejct and me via [paypal](https://paypal.me/alibahraminezhad)
 
-
 ## Credits
-Most of the credits of this library goes to [Tatham Oddie](https://tatham.blog/2011/07/14/released-snowmaker-a-unique-id-generator-for-azure-or-any-other-cloud-hosting-environment/) for making SnowMaker. I forked his work and made lots of change to make it available on .NET Standard (2.0 and 2.1). SnowMaker is out-dated and is using very old version of Azure Packages.
+
+Most of the credits of this library goes
+to [Tatham Oddie](https://tatham.blog/2011/07/14/released-snowmaker-a-unique-id-generator-for-azure-or-any-other-cloud-hosting-environment/)
+for making SnowMaker. I forked his work and made lots of change to make it available on .NET Standard (2.0 and 2.1).
+SnowMaker is out-dated and is using very old version of Azure Packages.

@@ -27,10 +27,8 @@ namespace AutoNumber
             {
                 var file = File.Create(blockPath);
 
-                using (var streamWriter = new StreamWriter(file))
-                {
-                    streamWriter.Write(SeedValue);
-                }
+                using var streamWriter = new StreamWriter(file);
+                streamWriter.Write(SeedValue);
 
                 return SeedValue;
             }

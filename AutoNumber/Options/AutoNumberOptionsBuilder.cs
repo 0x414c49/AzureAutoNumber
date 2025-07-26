@@ -16,7 +16,7 @@ namespace AutoNumber.Options
             configuration.GetSection(AutoNumber).Bind(Options);
         }
 
-        public AutoNumberOptions Options { get; } = new AutoNumberOptions();
+        public AutoNumberOptions Options { get; } = new();
 
         /// <summary>
         ///     Uses the default StorageAccount already defined in dependency injection

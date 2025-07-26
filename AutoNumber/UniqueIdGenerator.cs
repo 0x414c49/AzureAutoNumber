@@ -58,7 +58,7 @@ namespace AutoNumber
                 var firstIdInNextBatch = state.HighestIdAvailableInBatch + 1;
 
                 if (optimisticDataStore.TryOptimisticWrite(scopeName,
-                    firstIdInNextBatch.ToString(CultureInfo.InvariantCulture)))
+                        firstIdInNextBatch.ToString(CultureInfo.InvariantCulture)))
                     return;
 
                 writesAttempted++;
@@ -72,7 +72,7 @@ namespace AutoNumber
 
         private readonly IOptimisticDataStore optimisticDataStore;
         private readonly IDictionary<string, ScopeState> states = new Dictionary<string, ScopeState>();
-        private readonly object statesLock = new object();
+        private readonly object statesLock = new();
         private int maxWriteAttempts = 25;
 
         #endregion
