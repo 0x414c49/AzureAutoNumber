@@ -32,25 +32,25 @@ namespace AutoNumber.IntegrationTests
             var optionsBuilder = new AutoNumberOptionsBuilder(serviceProvider.GetService<IConfiguration>());
 
             optionsBuilder.SetBatchSize(5);
-            Assert.AreEqual(5, optionsBuilder.Options.BatchSize);
+            Assert.That(optionsBuilder.Options.BatchSize, Is.EqualTo(5));
 
             optionsBuilder.SetMaxWriteAttempts(10);
-            Assert.AreEqual(10, optionsBuilder.Options.MaxWriteAttempts);
+            Assert.That(optionsBuilder.Options.MaxWriteAttempts, Is.EqualTo(10));
 
             optionsBuilder.UseDefaultContainerName();
-            Assert.AreEqual("unique-urls", optionsBuilder.Options.StorageContainerName);
+            Assert.That(optionsBuilder.Options.StorageContainerName, Is.EqualTo("unique-urls"));
 
             optionsBuilder.UseContainerName("test");
-            Assert.AreEqual("test", optionsBuilder.Options.StorageContainerName);
+            Assert.That(optionsBuilder.Options.StorageContainerName, Is.EqualTo("test"));
 
             optionsBuilder.UseDefaultStorageAccount();
-            Assert.AreEqual(null, optionsBuilder.Options.StorageAccountConnectionString);
+            Assert.That(optionsBuilder.Options.StorageAccountConnectionString, Is.EqualTo(null));
 
             optionsBuilder.UseStorageAccount("test");
-            Assert.AreEqual("test123", optionsBuilder.Options.StorageAccountConnectionString);
+            Assert.That(optionsBuilder.Options.StorageAccountConnectionString, Is.EqualTo("test123"));
 
             optionsBuilder.UseStorageAccount("test-22");
-            Assert.AreEqual("test-22", optionsBuilder.Options.StorageAccountConnectionString);
+            Assert.That(optionsBuilder.Options.StorageAccountConnectionString, Is.EqualTo("test-22"));
         }
 
         [Test]
@@ -60,7 +60,7 @@ namespace AutoNumber.IntegrationTests
 
             var uniqueId = serviceProvider.GetService<IUniqueIdGenerator>();
 
-            Assert.NotNull(uniqueId);
+            Assert.That(uniqueId, Is.Not.Null);
         }
 
         [Test]
@@ -70,10 +70,10 @@ namespace AutoNumber.IntegrationTests
 
             var options = serviceProvider.GetService<IOptions<AutoNumberOptions>>();
 
-            Assert.NotNull(options.Value);
-            Assert.AreEqual(25, options.Value.MaxWriteAttempts);
-            Assert.AreEqual(50, options.Value.BatchSize);
-            Assert.AreEqual("unique-urls", options.Value.StorageContainerName);
+            Assert.That(options.Value, Is.Not.Null);
+            Assert.That(options.Value.MaxWriteAttempts, Is.EqualTo(25));
+            Assert.That(options.Value.BatchSize, Is.EqualTo(50));
+            Assert.That(options.Value.StorageContainerName, Is.EqualTo("unique-urls"));
         }
 
         [Test]
@@ -94,7 +94,7 @@ namespace AutoNumber.IntegrationTests
             var service = serviceCollection.BuildServiceProvider()
                 .GetService<IUniqueIdGenerator>();
 
-            Assert.NotNull(service);
+            Assert.That(service, Is.Not.Null);
         }
     }
 }

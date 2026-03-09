@@ -26,7 +26,7 @@ namespace IntegrationTests.cs
                 var generatedId = generator.NextId(testScope.IdScopeName);
 
                 // Assert
-                Assert.AreEqual(1, generatedId);
+                Assert.That(generatedId, Is.EqualTo(1));
             }
         }
 
@@ -43,7 +43,7 @@ namespace IntegrationTests.cs
                 generator.NextId(testScope.IdScopeName); //1
 
                 // Assert
-                Assert.AreEqual("4", testScope.ReadCurrentPersistedValue());
+                Assert.That(testScope.ReadCurrentPersistedValue(), Is.EqualTo("4"));
             }
         }
 
@@ -62,7 +62,7 @@ namespace IntegrationTests.cs
                 generator.NextId(testScope.IdScopeName); //3
 
                 // Assert
-                Assert.AreEqual("4", testScope.ReadCurrentPersistedValue());
+                Assert.That(testScope.ReadCurrentPersistedValue(), Is.EqualTo("4"));
             }
         }
 
@@ -82,7 +82,7 @@ namespace IntegrationTests.cs
                 generator.NextId(testScope.IdScopeName); //4
 
                 // Assert
-                Assert.AreEqual("7", testScope.ReadCurrentPersistedValue());
+                Assert.That(testScope.ReadCurrentPersistedValue(), Is.EqualTo("7"));
             }
         }
 
@@ -105,7 +105,7 @@ namespace IntegrationTests.cs
                 var lastId = generator1.NextId(testScope.IdScopeName); //7
 
                 // Assert
-                Assert.AreEqual(7, lastId);
+                Assert.That(lastId, Is.EqualTo(7));
             }
         }
 
@@ -136,9 +136,7 @@ namespace IntegrationTests.cs
                 };
 
                 // Assert
-                CollectionAssert.AreEqual(
-                    new[] {1, 2, 3, 4, 7, 5, 6, 10, 8, 9},
-                    generatedIds);
+                Assert.That(generatedIds, Is.EqualTo(new[] {1, 2, 3, 4, 7, 5, 6, 10, 8, 9}));
             }
         }
 
@@ -167,10 +165,10 @@ namespace IntegrationTests.cs
                     });
 
                 // Assert we generated the right count of ids
-                Assert.AreEqual(testLength, generatedIds.Count);
+                Assert.That(generatedIds.Count, Is.EqualTo(testLength));
 
                 // Assert there were no duplicates
-                Assert.IsFalse(generatedIds.GroupBy(n => n).Any(g => g.Count() != 1));
+                Assert.That(generatedIds.GroupBy(n => n).Any(g => g.Count() != 1), Is.False);
 
                 // Assert we used multiple threads
                 var uniqueThreadsUsed = threadIds.Distinct().Count();
