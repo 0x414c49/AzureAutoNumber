@@ -6,113 +6,132 @@ using Azure.Storage.Blobs;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using NUnit.Framework;
 using Testcontainers.Azurite;
+using Xunit;
 
 namespace AutoNumber.IntegrationTests
 {
-    [TestFixture]
-    public class DependencyInjectionTest
+    [Collection("Azurite")]
+    public class DependencyInjectionFixture : IAsyncLifetime
     {
-        private AzuriteContainer _azuriteContainer;
-        private string _connectionString;
+        private readonly AzuriteContainer _azuriteContainer;
+        public string ConnectionString { get; private set; }
+        public IConfigurationRoot Configuration { get; }
 
-        [OneTimeSetUp]
-        public async Task OneTimeSetUp()
+        public DependencyInjectionFixture()
         {
             _azuriteContainer = new AzuriteBuilder("mcr.microsoft.com/azure-storage/azurite:latest")
                 .WithCommand("--skipApiVersionCheck")
                 .Build();
-            
-            await _azuriteContainer.StartAsync();
-            
-            _connectionString = _azuriteContainer.GetConnectionString();
+
+            Configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", true, true)
+                .Build();
         }
 
-        [OneTimeTearDown]
-        public async Task OneTimeTearDown()
+        public async Task InitializeAsync()
         {
-            if (_azuriteContainer != null)
-            {
-                await _azuriteContainer.DisposeAsync();
-            }
+            await _azuriteContainer.StartAsync();
+            ConnectionString = _azuriteContainer.GetConnectionString();
         }
 
-        public IConfigurationRoot Configuration = new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json", true, true).Build();
+        public async Task DisposeAsync()
+        {
+            await _azuriteContainer.DisposeAsync();
+        }
+    }
+
+    [Collection("Azurite")]
+    public class DependencyInjectionTests : IClassFixture<DependencyInjectionFixture>
+    {
+        private readonly DependencyInjectionFixture _fixture;
+        private const int CustomBatchSize = 5;
+        private const int CustomMaxWriteAttempts = 10;
+        private const string DefaultContainerName = "unique-urls";
+        private const string CustomContainerName = "test";
+        private const string TestConnectionString = "test123";
+        private const string AlternateConnectionString = "test-22";
+        private const int ExpectedMaxWriteAttempts = 25;
+        private const int ExpectedBatchSize = 50;
+        private const int CustomBatchSizeForGenerator = 10;
+
+        public DependencyInjectionTests(DependencyInjectionFixture fixture)
+        {
+            _fixture = fixture;
+        }
 
         private ServiceProvider GenerateServiceProvider()
         {
             var serviceCollection = new ServiceCollection();
-            serviceCollection.AddSingleton(new BlobServiceClient(_connectionString));
-            serviceCollection.AddSingleton<IConfiguration>(Configuration);
+            serviceCollection.AddSingleton(new BlobServiceClient(_fixture.ConnectionString));
+            serviceCollection.AddSingleton<IConfiguration>(_fixture.Configuration);
             serviceCollection.AddAutoNumber();
             return serviceCollection.BuildServiceProvider();
         }
 
-        [Test]
+        [Fact]
         public void OptionsBuilderShouldGenerateOptions()
         {
             var serviceProvider = GenerateServiceProvider();
             var optionsBuilder = new AutoNumberOptionsBuilder(serviceProvider.GetService<IConfiguration>());
 
-            optionsBuilder.SetBatchSize(5);
-            Assert.That(optionsBuilder.Options.BatchSize, Is.EqualTo(5));
+            optionsBuilder.SetBatchSize(CustomBatchSize);
+            Assert.Equal(CustomBatchSize, optionsBuilder.Options.BatchSize);
 
-            optionsBuilder.SetMaxWriteAttempts(10);
-            Assert.That(optionsBuilder.Options.MaxWriteAttempts, Is.EqualTo(10));
+            optionsBuilder.SetMaxWriteAttempts(CustomMaxWriteAttempts);
+            Assert.Equal(CustomMaxWriteAttempts, optionsBuilder.Options.MaxWriteAttempts);
 
             optionsBuilder.UseDefaultContainerName();
-            Assert.That(optionsBuilder.Options.StorageContainerName, Is.EqualTo("unique-urls"));
+            Assert.Equal(DefaultContainerName, optionsBuilder.Options.StorageContainerName);
 
-            optionsBuilder.UseContainerName("test");
-            Assert.That(optionsBuilder.Options.StorageContainerName, Is.EqualTo("test"));
+            optionsBuilder.UseContainerName(CustomContainerName);
+            Assert.Equal(CustomContainerName, optionsBuilder.Options.StorageContainerName);
 
             optionsBuilder.UseDefaultStorageAccount();
-            Assert.That(optionsBuilder.Options.StorageAccountConnectionString, Is.EqualTo(null));
+            Assert.Null(optionsBuilder.Options.StorageAccountConnectionString);
 
-            optionsBuilder.UseStorageAccount("test");
-            Assert.That(optionsBuilder.Options.StorageAccountConnectionString, Is.EqualTo("test123"));
+            optionsBuilder.UseStorageAccount(CustomContainerName);
+            Assert.Equal(TestConnectionString, optionsBuilder.Options.StorageAccountConnectionString);
 
-            optionsBuilder.UseStorageAccount("test-22");
-            Assert.That(optionsBuilder.Options.StorageAccountConnectionString, Is.EqualTo("test-22"));
+            optionsBuilder.UseStorageAccount(AlternateConnectionString);
+            Assert.Equal(AlternateConnectionString, optionsBuilder.Options.StorageAccountConnectionString);
         }
 
-        [Test]
+        [Fact]
         public void ShouldCraeteUniqueIdGenerator()
         {
             var serviceProvider = GenerateServiceProvider();
 
             var uniqueId = serviceProvider.GetService<IUniqueIdGenerator>();
 
-            Assert.That(uniqueId, Is.Not.Null);
+            Assert.NotNull(uniqueId);
         }
 
-        [Test]
+        [Fact]
         public void ShouldOptionsContainsDefaultValues()
         {
             var serviceProvider = GenerateServiceProvider();
 
             var options = serviceProvider.GetService<IOptions<AutoNumberOptions>>();
 
-            Assert.That(options.Value, Is.Not.Null);
-            Assert.That(options.Value.MaxWriteAttempts, Is.EqualTo(25));
-            Assert.That(options.Value.BatchSize, Is.EqualTo(50));
-            Assert.That(options.Value.StorageContainerName, Is.EqualTo("unique-urls"));
+            Assert.NotNull(options.Value);
+            Assert.Equal(ExpectedMaxWriteAttempts, options.Value.MaxWriteAttempts);
+            Assert.Equal(ExpectedBatchSize, options.Value.BatchSize);
+            Assert.Equal(DefaultContainerName, options.Value.StorageContainerName);
         }
 
-        [Test]
+        [Fact]
         public void ShouldResolveUniqueIdGenerator()
         {
             var serviceCollection = new ServiceCollection();
-            serviceCollection.AddSingleton(new BlobServiceClient(_connectionString));
+            serviceCollection.AddSingleton(new BlobServiceClient(_fixture.ConnectionString));
 
-            serviceCollection.AddAutoNumber(Configuration, x =>
+            serviceCollection.AddAutoNumber(_fixture.Configuration, x =>
             {
                 return x.UseContainerName("ali")
                     .UseDefaultStorageAccount()
-                    .SetBatchSize(10)
+                    .SetBatchSize(CustomBatchSizeForGenerator)
                     .SetMaxWriteAttempts()
                     .Options;
             });
@@ -120,7 +139,7 @@ namespace AutoNumber.IntegrationTests
             var service = serviceCollection.BuildServiceProvider()
                 .GetService<IUniqueIdGenerator>();
 
-            Assert.That(service, Is.Not.Null);
+            Assert.NotNull(service);
         }
     }
 }
