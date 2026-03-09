@@ -5,10 +5,10 @@
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <AssemblyTitle>SnowMaker</AssemblyTitle>
     <Product>AzureAutoNumber</Product>
-    <Description>High performance, distributed unique id generator for Azure environments.</Description>
-    <Version>1.4.0</Version>
-    <AssemblyVersion>1.5.0.0</AssemblyVersion>
-    <FileVersion>1.5.0.0</FileVersion>
+    <Description>High performance, distributed unique id generator for Azure environments. Supports .NET 8.0 and .NET 10.0 with Central Package Management.</Description>
+    <Version>2.0.0</Version>
+    <AssemblyVersion>2.0.0.0</AssemblyVersion>
+    <FileVersion>2.0.0.0</FileVersion>
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <Authors>Ali Bahraminezhad</Authors>
     <PackageLicenseExpression>MS-PL</PackageLicenseExpression>
@@ -18,10 +18,14 @@
     <AssemblyName>AutoNumber</AssemblyName>
     <RootNamespace>AutoNumber</RootNamespace>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageReleaseNotes>* .NET 10
-* All azure and other nuget dependencies upgraded to latest versions</PackageReleaseNotes>
+    <PackageReleaseNotes>* Upgraded to .NET 10.0 and .NET 8.0 (dropped .NET 6.0 and netstandard)
+* Implemented Central Package Management (CPM)
+* Updated Azure.Storage.Blobs to 12.27.0
+* Updated Microsoft.Extensions packages to 10.0.3
+* Updated all test packages to latest versions
+* Updated GitHub Actions to support .NET 10.0</PackageReleaseNotes>
     <PackageId>AzureAutoNumber</PackageId>
-    <PackageVersion>1.5.0</PackageVersion>
+    <PackageVersion>2.0.0</PackageVersion>
     <SignAssembly>False</SignAssembly>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
