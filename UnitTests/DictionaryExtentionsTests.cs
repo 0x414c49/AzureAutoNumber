@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Threading;
 using AutoNumber.Extensions;
-using NUnit.Framework;
+using Xunit;
 
 namespace AutoNumber.UnitTests
 {
-    [TestFixture]
     public class DictionaryExtentionsTests
     {
         private static bool IsLockedOnCurrentThread(object lockObject)
@@ -21,7 +20,7 @@ namespace AutoNumber.UnitTests
             return !couldLockBeAcquiredOnOtherThread;
         }
 
-        [Test]
+        [Fact]
         public void GetValueShouldCallTheValueInitializerWithinTheLockIfTheKeyDoesntExist()
         {
             var dictionary = new Dictionary<string, string>
@@ -31,19 +30,17 @@ namespace AutoNumber.UnitTests
 
             var dictionaryLock = new object();
 
-            // Act
             dictionary.GetValue(
                 "bar",
                 dictionaryLock,
                 () =>
                 {
-                    // Assert
-                    Assert.That(IsLockedOnCurrentThread(dictionaryLock), Is.True);
+                    Assert.True(IsLockedOnCurrentThread(dictionaryLock));
                     return "qak";
                 });
         }
 
-        [Test]
+        [Fact]
         public void GetValueShouldReturnExistingValueWithoutUsingTheLock()
         {
             var dictionary = new Dictionary<string, string>
@@ -51,15 +48,12 @@ namespace AutoNumber.UnitTests
                 {"foo", "bar"}
             };
 
-            // Act
-            // null can't be used as a lock and will throw an exception if attempted
             var value = dictionary.GetValue("foo", null, null);
 
-            // Assert
-            Assert.That("bar", Is.EqualTo(value));
+            Assert.Equal("bar", value);
         }
 
-        [Test]
+        [Fact]
         public void GetValueShouldStoreNewValuesAfterCallingTheValueInitializerOnce()
         {
             var dictionary = new Dictionary<string, string>
@@ -69,16 +63,13 @@ namespace AutoNumber.UnitTests
 
             var dictionaryLock = new object();
 
-            // Arrange
             dictionary.GetValue("bar", dictionaryLock, () => "qak");
 
-            // Act
             dictionary.GetValue(
                 "bar",
                 dictionaryLock,
                 () =>
                 {
-                    // Assert
                     Assert.Fail("Value initializer should not have been called a second time.");
                     return null;
                 });
