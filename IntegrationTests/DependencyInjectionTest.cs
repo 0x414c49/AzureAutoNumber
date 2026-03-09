@@ -1,4 +1,5 @@
-﻿using System.IO;
+using System.IO;
+using System.Threading.Tasks;
 using AutoNumber.Interfaces;
 using AutoNumber.Options;
 using Azure.Storage.Blobs;
@@ -6,12 +7,37 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using NUnit.Framework;
+using Testcontainers.Azurite;
 
 namespace AutoNumber.IntegrationTests
 {
     [TestFixture]
     public class DependencyInjectionTest
     {
+        private AzuriteContainer _azuriteContainer;
+        private string _connectionString;
+
+        [OneTimeSetUp]
+        public async Task OneTimeSetUp()
+        {
+            _azuriteContainer = new AzuriteBuilder("mcr.microsoft.com/azure-storage/azurite:latest")
+                .WithCommand("--skipApiVersionCheck")
+                .Build();
+            
+            await _azuriteContainer.StartAsync();
+            
+            _connectionString = _azuriteContainer.GetConnectionString();
+        }
+
+        [OneTimeTearDown]
+        public async Task OneTimeTearDown()
+        {
+            if (_azuriteContainer != null)
+            {
+                await _azuriteContainer.DisposeAsync();
+            }
+        }
+
         public IConfigurationRoot Configuration = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonFile("appsettings.json", true, true).Build();
@@ -19,7 +45,7 @@ namespace AutoNumber.IntegrationTests
         private ServiceProvider GenerateServiceProvider()
         {
             var serviceCollection = new ServiceCollection();
-            serviceCollection.AddSingleton(new BlobServiceClient("UseDevelopmentStorage=true"));
+            serviceCollection.AddSingleton(new BlobServiceClient(_connectionString));
             serviceCollection.AddSingleton<IConfiguration>(Configuration);
             serviceCollection.AddAutoNumber();
             return serviceCollection.BuildServiceProvider();
@@ -80,7 +106,7 @@ namespace AutoNumber.IntegrationTests
         public void ShouldResolveUniqueIdGenerator()
         {
             var serviceCollection = new ServiceCollection();
-            serviceCollection.AddSingleton(new BlobServiceClient("UseDevelopmentStorage=true"));
+            serviceCollection.AddSingleton(new BlobServiceClient(_connectionString));
 
             serviceCollection.AddAutoNumber(Configuration, x =>
             {

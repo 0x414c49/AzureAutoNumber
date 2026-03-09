@@ -21,6 +21,7 @@ namespace IntegrationTests.cs
         public async Task OneTimeSetUp()
         {
             _azuriteContainer = new AzuriteBuilder("mcr.microsoft.com/azure-storage/azurite:latest")
+                .WithCommand("--skipApiVersionCheck")
                 .Build();
             
             await _azuriteContainer.StartAsync();
