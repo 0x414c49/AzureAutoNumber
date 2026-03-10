@@ -50,21 +50,69 @@ jobs:
       id: git_tag
       run: echo "tag=$(git describe --tags --abbrev=0 2>/dev/null || echo 'v0.0.0')" >> $GITHUB_OUTPUT
     
-    - name: Analyze commits and calculate version
+    - name: Calculate next version
       id: version
-      uses: anothrnick/github-tag-action@1.67.0
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        DEFAULT_BUMP: patch
-        WITH_V: true
-        DRY_RUN: true
-        RELEASE_BRANCHES: main
-        INITIAL_VERSION: ${{ steps.current_tag.outputs.tag }}
-      with:
-        tag_context: branch
+      run: |
+        CURRENT_VERSION="${{ steps.current_tag.outputs.tag }}"
+        CURRENT_VERSION="${CURRENT_VERSION#v}"
+        
+        echo "Current version: $CURRENT_VERSION"
+        
+        # Parse version
+        MAJOR=$(echo $CURRENT_VERSION | cut -d. -f1)
+        MINOR=$(echo $CURRENT_VERSION | cut -d. -f2)
+        PATCH=$(echo $CURRENT_VERSION | cut -d. -f3)
+        
+        echo "Parsed: MAJOR=$MAJOR, MINOR=$MINOR, PATCH=$PATCH"
+        
+        # Get commits since last tag
+        LAST_TAG="${{ steps.git_tag.outputs.tag }}"
+        COMMITS=$(git log ${LAST_TAG}..HEAD --oneline 2>/dev/null || git log --oneline)
+        
+        echo "Commits since $LAST_TAG:"
+        echo "$COMMITS"
+        
+        # Determine bump type based on conventional commits
+        BUMP_TYPE="none"
+        
+        if echo "$COMMITS" | grep -qE "^[a-f0-9]+ .*(\!|BREAKING CHANGE)"; then
+          BUMP_TYPE="major"
+        elif echo "$COMMITS" | grep -qE "^[a-f0-9]+ feat"; then
+          BUMP_TYPE="minor"
+        elif echo "$COMMITS" | grep -qE "^[a-f0-9]+ fix"; then
+          BUMP_TYPE="patch"
+        fi
+        
+        echo "Bump type: $BUMP_TYPE"
+        
+        # Calculate new version
+        if [ "$BUMP_TYPE" = "major" ]; then
+          MAJOR=$((MAJOR + 1))
+          MINOR=0
+          PATCH=0
+        elif [ "$BUMP_TYPE" = "minor" ]; then
+          MINOR=$((MINOR + 1))
+          PATCH=0
+        elif [ "$BUMP_TYPE" = "patch" ]; then
+          PATCH=$((PATCH + 1))
+        else
+          echo "No version bump needed (no conventional commits found)"
+          echo "new_version=" >> $GITHUB_OUTPUT
+          echo "new_tag=" >> $GITHUB_OUTPUT
+          exit 0
+        fi
+        
+        NEW_VERSION="$MAJOR.$MINOR.$PATCH"
+        NEW_TAG="v$NEW_VERSION"
+        
+        echo "New version: $NEW_VERSION"
+        echo "New tag: $NEW_TAG"
+        
+        echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+        echo "new_tag=$NEW_TAG" >> $GITHUB_OUTPUT
     
     - name: Update .csproj version
-      if: steps.version.outputs.new_tag != steps.current_tag.outputs.tag
+      if: steps.version.outputs.new_tag != '' && steps.version.outputs.new_tag != steps.current_tag.outputs.tag
       run: |
         VERSION="${{ steps.version.outputs.new_version }}"
         echo "Updating to version: $VERSION"
@@ -83,7 +131,7 @@ jobs:
         grep -E "<(Version|PackageVersion|AssemblyVersion|FileVersion)>" AutoNumber/AutoNumber.csproj
     
     - name: Commit and push version bump
-      if: steps.version.outputs.new_tag != steps.current_tag.outputs.tag
+      if: steps.version.outputs.new_tag != '' && steps.version.outputs.new_tag != steps.current_tag.outputs.tag
       run: |
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -100,7 +148,7 @@ jobs:
         git push origin ${{ steps.version.outputs.new_tag }}
     
     - name: No version change
-      if: steps.version.outputs.new_tag == steps.current_tag.outputs.tag
+      if: steps.version.outputs.new_tag == '' || steps.version.outputs.new_tag == steps.current_tag.outputs.tag
       run: echo "No version bump needed"
 
   build:
