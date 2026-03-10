@@ -6,9 +6,9 @@
     <AssemblyTitle>SnowMaker</AssemblyTitle>
     <Product>AzureAutoNumber</Product>
     <Description>High performance, distributed unique id generator for Azure environments. Supports .NET 8.0 and .NET 10.0 with Central Package Management.</Description>
-    <Version>2.0.1</Version>
-    <AssemblyVersion>2.0.1.0</AssemblyVersion>
-    <FileVersion>2.0.1.0</FileVersion>
+    <Version>2.0.2</Version>
+    <AssemblyVersion>2.0.2.0</AssemblyVersion>
+    <FileVersion>2.0.2.0</FileVersion>
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <Authors>Ali Bahraminezhad</Authors>
     <PackageLicenseExpression>MS-PL</PackageLicenseExpression>
@@ -25,7 +25,7 @@
 * Updated all test packages to latest versions
 * Updated GitHub Actions to support .NET 10.0</PackageReleaseNotes>
     <PackageId>AzureAutoNumber</PackageId>
-    <PackageVersion>2.0.1</PackageVersion>
+    <PackageVersion>2.0.2</PackageVersion>
     <SignAssembly>False</SignAssembly>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
