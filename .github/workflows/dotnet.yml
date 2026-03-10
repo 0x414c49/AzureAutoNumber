@@ -58,11 +58,21 @@ jobs:
     - name: Update .csproj version
       if: steps.version.outputs.new_tag != steps.current_tag.outputs.tag
       run: |
-        VERSION=${{ steps.version.outputs.new_version }}
-        sed -i "s/<Version>.*<\/Version>/<Version>${VERSION}<\/Version>/" AutoNumber/AutoNumber.csproj
-        sed -i "s/<AssemblyVersion>.*<\/AssemblyVersion>/<AssemblyVersion>${VERSION}.0<\/AssemblyVersion>/" AutoNumber/AutoNumber.csproj
-        sed -i "s/<FileVersion>.*<\/FileVersion>/<FileVersion>${VERSION}.0<\/FileVersion>/" AutoNumber/AutoNumber.csproj
-        sed -i "s/<PackageVersion>.*<\/PackageVersion>/<PackageVersion>${VERSION}<\/PackageVersion>/" AutoNumber/AutoNumber.csproj
+        VERSION="${{ steps.version.outputs.new_version }}"
+        echo "Updating to version: $VERSION"
+        
+        if [ -z "$VERSION" ]; then
+          echo "ERROR: Version is empty!"
+          exit 1
+        fi
+        
+        sed -i "s|<Version>[^<]*</Version>|<Version>$VERSION</Version>|g" AutoNumber/AutoNumber.csproj
+        sed -i "s|<AssemblyVersion>[^<]*</AssemblyVersion>|<AssemblyVersion>${VERSION}.0</AssemblyVersion>|g" AutoNumber/AutoNumber.csproj
+        sed -i "s|<FileVersion>[^<]*</FileVersion>|<FileVersion>${VERSION}.0</FileVersion>|g" AutoNumber/AutoNumber.csproj
+        sed -i "s|<PackageVersion>[^<]*</PackageVersion>|<PackageVersion>$VERSION</PackageVersion>|g" AutoNumber/AutoNumber.csproj
+        
+        echo "Updated .csproj. Verification:"
+        grep -E "<(Version|PackageVersion|AssemblyVersion|FileVersion)>" AutoNumber/AutoNumber.csproj
     
     - name: Commit and push version bump
       if: steps.version.outputs.new_tag != steps.current_tag.outputs.tag
