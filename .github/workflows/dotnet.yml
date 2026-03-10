@@ -112,4 +112,25 @@ jobs:
       env:
         NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}       
       if: ${{ github.ref == 'refs/heads/main' }}    
-      run: dotnet nuget push AutoNumber/bin/Release/*.nupkg --source https://api.nuget.org/v3/index.json --api-key $NUGET_API_KEY
+      run: dotnet nuget push AutoNumber/bin/Release/*.nupkg --source https://api.nuget.org/v3/index.json --api-key $NUGET_API_KEY --skip-duplicate
+
+  release:
+    needs: [version-bump, build]
+    if: always() && needs.version-bump.outputs.changed == 'true'
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: ${{ needs.version-bump.outputs.new_tag }}
+        name: Release ${{ needs.version-bump.outputs.new_tag }}
+        generate_release_notes: true
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
