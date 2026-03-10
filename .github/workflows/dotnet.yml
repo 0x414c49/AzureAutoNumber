@@ -35,7 +35,15 @@ jobs:
     - name: Get current tag from .csproj
       id: current_tag
       run: |
-        VERSION=$(grep -oP '(?<=<Version>)[^<]+' AutoNumber/AutoNumber.csproj | head -1)
+        VERSION=$(grep -oP '(?<=<Version>)[^<]+' AutoNumber/AutoNumber.csproj | head -1 || true)
+        
+        if [ -z "$VERSION" ] || [ "$VERSION" = "" ]; then
+          echo "Version is empty in .csproj, falling back to git tag"
+          GIT_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+          VERSION="${GIT_TAG#v}"
+        fi
+        
+        echo "Current version: $VERSION"
         echo "tag=v${VERSION}" >> $GITHUB_OUTPUT
     
     - name: Get latest tag from git
@@ -80,6 +88,12 @@ jobs:
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
         git add AutoNumber/AutoNumber.csproj
+        
+        if git diff --staged --quiet; then
+          echo "No changes to commit - version already up to date"
+          exit 0
+        fi
+        
         git commit -m "chore: bump version to ${{ steps.version.outputs.new_version }}"
         git push
         git tag ${{ steps.version.outputs.new_tag }}
