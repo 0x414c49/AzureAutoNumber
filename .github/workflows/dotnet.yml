@@ -3,16 +3,91 @@ name: .NET
 on:
   push:
     branches: [ main ]
+    paths:
+      - '**.cs'
+      - '**.csproj'
+      - '.github/workflows/**.yml'
   pull_request:
     branches: [ main ]
+    paths:
+      - '**.cs'
+      - '**.csproj'
+      - '.github/workflows/**.yml'
+
+permissions:
+  contents: write
 
 jobs:
-  build:
+  version-bump:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    outputs:
+      new_version: ${{ steps.version.outputs.new_version }}
+      new_tag: ${{ steps.version.outputs.new_tag }}
+      changed: ${{ steps.version.outputs.new_tag != steps.current_tag.outputs.tag }}
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        token: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Get current tag from .csproj
+      id: current_tag
+      run: |
+        VERSION=$(grep -oP '(?<=<Version>)[^<]+' AutoNumber/AutoNumber.csproj | head -1)
+        echo "tag=v${VERSION}" >> $GITHUB_OUTPUT
+    
+    - name: Get latest tag from git
+      id: git_tag
+      run: echo "tag=$(git describe --tags --abbrev=0 2>/dev/null || echo 'v0.0.0')" >> $GITHUB_OUTPUT
+    
+    - name: Analyze commits and calculate version
+      id: version
+      uses: anothrnick/github-tag-action@1.67.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        DEFAULT_BUMP: patch
+        WITH_V: true
+        DRY_RUN: true
+        RELEASE_BRANCHES: main
+        INITIAL_VERSION: ${{ steps.current_tag.outputs.tag }}
+      with:
+        tag_context: branch
+    
+    - name: Update .csproj version
+      if: steps.version.outputs.new_tag != steps.current_tag.outputs.tag
+      run: |
+        VERSION=${{ steps.version.outputs.new_version }}
+        sed -i "s/<Version>.*<\/Version>/<Version>${VERSION}<\/Version>/" AutoNumber/AutoNumber.csproj
+        sed -i "s/<AssemblyVersion>.*<\/AssemblyVersion>/<AssemblyVersion>${VERSION}.0<\/AssemblyVersion>/" AutoNumber/AutoNumber.csproj
+        sed -i "s/<FileVersion>.*<\/FileVersion>/<FileVersion>${VERSION}.0<\/FileVersion>/" AutoNumber/AutoNumber.csproj
+        sed -i "s/<PackageVersion>.*<\/PackageVersion>/<PackageVersion>${VERSION}<\/PackageVersion>/" AutoNumber/AutoNumber.csproj
+    
+    - name: Commit and push version bump
+      if: steps.version.outputs.new_tag != steps.current_tag.outputs.tag
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git add AutoNumber/AutoNumber.csproj
+        git commit -m "chore: bump version to ${{ steps.version.outputs.new_version }}"
+        git push
+        git tag ${{ steps.version.outputs.new_tag }}
+        git push origin ${{ steps.version.outputs.new_tag }}
+    
+    - name: No version change
+      if: steps.version.outputs.new_tag == steps.current_tag.outputs.tag
+      run: echo "No version bump needed"
 
+  build:
+    needs: version-bump
+    if: always() && (needs.version-bump.result == 'success' || needs.version-bump.result == 'skipped')
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
     
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
