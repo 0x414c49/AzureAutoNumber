@@ -20,8 +20,8 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageReleaseNotes>* Upgraded to .NET 10.0 and .NET 8.0 (dropped .NET 6.0 and netstandard)
 * Implemented Central Package Management (CPM)
-* Updated Azure.Storage.Blobs to 12.27.0
-* Updated Microsoft.Extensions packages to 10.0.3
+* Updated Azure.Storage.Blobs to 12.29.0
+* Updated Microsoft.Extensions packages to 10.0.9
 * Updated all test packages to latest versions
 * Updated GitHub Actions to support .NET 10.0</PackageReleaseNotes>
     <PackageId>AzureAutoNumber</PackageId>
