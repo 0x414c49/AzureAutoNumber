@@ -107,6 +107,13 @@ jobs:
         NEW_VERSION="$MAJOR.$MINOR.$PATCH"
         NEW_TAG="v$NEW_VERSION"
         
+        while git tag -l | grep -q "^${NEW_TAG}$"; do
+          echo "Tag $NEW_TAG already exists, incrementing patch version"
+          PATCH=$((PATCH + 1))
+          NEW_VERSION="$MAJOR.$MINOR.$PATCH"
+          NEW_TAG="v$NEW_VERSION"
+        done
+        
         echo "New version: $NEW_VERSION"
         echo "New tag: $NEW_TAG"
         
