@@ -21,6 +21,12 @@ namespace AutoNumber
         private readonly ConcurrentDictionary<string, BlockBlobClient> blobReferences;
         private readonly object blobReferencesLock = new object();
 
+        // ETag observed by the most recent GetData per block, so TryOptimisticWrite can condition
+        // on the state that was actually read. Conditioning on the blob's current ETag (fetched at
+        // write time) does not detect writers that committed between our read and our write, which
+        // allows two processes to hand out the same id range.
+        private readonly ConcurrentDictionary<string, ETag> readETags = new ConcurrentDictionary<string, ETag>();
+
         public BlobOptimisticDataStore(BlobServiceClient blobServiceClient, string containerName)
         {
             blobContainer = blobServiceClient.GetBlobContainerClient(containerName.ToLower());
@@ -36,22 +42,20 @@ namespace AutoNumber
         {
             var blobReference = GetBlobReference(blockName);
 
-            using (var stream = new MemoryStream())
-            {
-                blobReference.DownloadTo(stream);
-                return Encoding.UTF8.GetString(stream.ToArray());
-            }
+            // DownloadContent returns the content and its ETag from a single response, so the
+            // value/ETag pair is consistent
+            var download = blobReference.DownloadContent();
+            readETags[blockName] = download.Value.Details.ETag;
+            return download.Value.Content.ToString();
         }
 
         public async Task<string> GetDataAsync(string blockName)
         {
             var blobReference = GetBlobReference(blockName);
 
-            using (var stream = new MemoryStream())
-            {
-                await blobReference.DownloadToAsync(stream).ConfigureAwait(false);
-                return Encoding.UTF8.GetString(stream.ToArray());
-            }
+            var download = await blobReference.DownloadContentAsync().ConfigureAwait(false);
+            readETags[blockName] = download.Value.Details.ETag;
+            return download.Value.Content.ToString();
         }
 
         public async Task<bool> InitAsync()
@@ -69,11 +73,21 @@ namespace AutoNumber
         public bool TryOptimisticWrite(string blockName, string data)
         {
             var blobReference = GetBlobReference(blockName);
+
+            // Condition the write on the ETag captured by the preceding GetData, so any writer that
+            // committed after our read fails this write with 412 and the caller re-reads and retries.
+            // Each read ETag is consumed at most once; callers without a preceding read fall back to
+            // the blob's current ETag (previous behaviour).
+            if (!readETags.TryRemove(blockName, out var readETag))
+            {
+                readETag = blobReference.GetProperties().Value.ETag;
+            }
+
             try
             {
                 var blobRequestCondition = new BlobRequestConditions
                 {
-                    IfMatch = (blobReference.GetProperties()).Value.ETag
+                    IfMatch = readETag
                 };
                 UploadText(
                     blobReference,
@@ -94,11 +108,17 @@ namespace AutoNumber
         public async Task<bool> TryOptimisticWriteAsync(string blockName, string data)
         {
             var blobReference = GetBlobReference(blockName);
+
+            if (!readETags.TryRemove(blockName, out var readETag))
+            {
+                readETag = (await blobReference.GetPropertiesAsync().ConfigureAwait(false)).Value.ETag;
+            }
+
             try
             {
                 var blobRequestCondition = new BlobRequestConditions
                 {
-                    IfMatch = (await blobReference.GetPropertiesAsync()).Value.ETag
+                    IfMatch = readETag
                 };
                 await UploadTextAsync(
                     blobReference,
