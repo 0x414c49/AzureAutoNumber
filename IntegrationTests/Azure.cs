@@ -160,6 +160,38 @@ namespace IntegrationTests.cs
         }
 
         [Fact]
+        public void ShouldNotGenerateDuplicateIdsAcrossGeneratorsUnderContention()
+        {
+            // Regression test: TryOptimisticWrite used to condition on the blob's CURRENT ETag
+            // (fetched at write time) instead of the ETag observed by the preceding GetData, so a
+            // competing generator that committed between our read and our write went undetected and
+            // both handed out the same ids. Independent stores/generators simulate separate
+            // processes; BatchSize = 1 maximises contention on the counter blob.
+            using var testScope = BuildTestScope();
+            const int generatorCount = 4;
+            const int idsPerGenerator = 100;
+
+            var generators = Enumerable.Range(0, generatorCount)
+                .Select(_ => new UniqueIdGenerator(BuildStore(testScope))
+                {
+                    BatchSize = 1,
+                    MaxWriteAttempts = 100
+                })
+                .ToArray();
+
+            var generatedIds = new ConcurrentQueue<long>();
+            var scopeName = testScope.IdScopeName;
+            Parallel.ForEach(generators, generator =>
+            {
+                for (var i = 0; i < idsPerGenerator; i++)
+                    generatedIds.Enqueue(generator.NextId(scopeName));
+            });
+
+            Assert.Equal(generatorCount * idsPerGenerator, generatedIds.Count);
+            Assert.Equal(generatedIds.Count, generatedIds.Distinct().Count());
+        }
+
+        [Fact]
         public void ShouldSupportUsingOneGeneratorFromMultipleThreads()
         {
             using var testScope = BuildTestScope();
