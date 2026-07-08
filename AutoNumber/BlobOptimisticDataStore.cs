@@ -14,6 +14,19 @@ using Microsoft.Extensions.Options;
 
 namespace AutoNumber
 {
+    /// <summary>
+    /// Optimistic-concurrency counter store backed by Azure block blobs.
+    /// </summary>
+    /// <remarks>
+    /// The read-time ETag captured by <see cref="GetData"/>/<see cref="GetDataAsync"/> is stored
+    /// per block name and consumed by the next <see cref="TryOptimisticWrite"/>/
+    /// <see cref="TryOptimisticWriteAsync"/> for that block, turning the read-&gt;write cycle into a
+    /// compare-and-swap. Callers must therefore keep the read-&gt;write cycle for a given block
+    /// serialized per instance; <c>UniqueIdGenerator</c> does this via its per-scope lock.
+    /// Interleaving concurrent read+write for the same block on one instance can drop a read-time
+    /// ETag, causing a silent fallback to the blob's current ETag (fetched at write time), which can
+    /// hand out duplicate id ranges.
+    /// </remarks>
     public class BlobOptimisticDataStore : IOptimisticDataStore
     {
         private const string SeedValue = "1";
